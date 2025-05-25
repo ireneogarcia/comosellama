@@ -1,0 +1,28 @@
+{
+  "expo": {
+    "name": "Deslizas",
+    "slug": "deslizas",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "resizeMode": "contain",
+      "backgroundColor": "#4A90E2"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#4A90E2"
+      }
+    },
+    "web": {
+      "bundler": "webpack"
+    },
+    "platforms": ["ios", "android", "web"]
+  }
+} 
