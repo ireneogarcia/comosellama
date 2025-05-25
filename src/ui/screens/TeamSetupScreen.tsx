@@ -9,6 +9,7 @@ import {
   Alert,
   ScrollView,
 } from 'react-native';
+import { WordRepository, WordCategory } from '../../core/password/WordRepository';
 
 interface TeamSetupScreenProps {
   navigation: any;
@@ -31,6 +32,9 @@ const TEAM_COLORS = [
   '#E67E22', // Naranja oscuro
 ];
 
+// Instancia del repositorio para obtener categorías
+const wordRepository = new WordRepository();
+
 export const TeamSetupScreen: React.FC<TeamSetupScreenProps> = ({ navigation, route }) => {
   // Función para inicializar equipos con nombres previos si están disponibles
   const initializeTeams = (): Team[] => {
@@ -46,10 +50,12 @@ export const TeamSetupScreen: React.FC<TeamSetupScreenProps> = ({ navigation, ro
       }));
     }
     
-    // Si no hay equipos previos, usar configuración por defecto
+    // Si no hay equipos previos, usar nombres por defecto basados en colores
+    const defaultTeamNames = ['Equipo Rojo', 'Equipo Azul', 'Equipo Verde', 'Equipo Naranja', 'Equipo Morado', 'Equipo Naranja Oscuro'];
+    
     return [
-      { id: 1, name: '', score: 0, color: TEAM_COLORS[0] },
-      { id: 2, name: '', score: 0, color: TEAM_COLORS[1] },
+      { id: 1, name: defaultTeamNames[0], score: 0, color: TEAM_COLORS[0] },
+      { id: 2, name: defaultTeamNames[1], score: 0, color: TEAM_COLORS[1] },
     ];
   };
 
@@ -57,6 +63,14 @@ export const TeamSetupScreen: React.FC<TeamSetupScreenProps> = ({ navigation, ro
   const [numberOfRounds, setNumberOfRounds] = useState<number>(
     route.params?.numberOfRounds || 3
   );
+  const [selectedCategory, setSelectedCategory] = useState<string | undefined>(
+    route.params?.selectedCategory
+  );
+  const [categories] = useState<WordCategory[]>(wordRepository.getCategories());
+  const [timePerRound, setTimePerRound] = useState<number>(
+    route.params?.timePerRound || 30
+  );
+  const [editingTeams, setEditingTeams] = useState<Set<number>>(new Set());
 
   const updateTeamName = (teamId: number, name: string) => {
     setTeams(prevTeams =>
@@ -66,19 +80,35 @@ export const TeamSetupScreen: React.FC<TeamSetupScreenProps> = ({ navigation, ro
     );
   };
 
+  const handleTeamNameFocus = (teamId: number) => {
+    const team = teams.find(t => t.id === teamId);
+    if (team && !editingTeams.has(teamId)) {
+      // Si es la primera vez que se edita este equipo, borrar el contenido
+      const defaultTeamNames = ['Equipo Rojo', 'Equipo Azul', 'Equipo Verde', 'Equipo Naranja', 'Equipo Morado', 'Equipo Naranja Oscuro'];
+      if (defaultTeamNames.includes(team.name)) {
+        updateTeamName(teamId, '');
+      }
+      // Marcar este equipo como editado
+      setEditingTeams(prev => new Set(prev).add(teamId));
+    }
+  };
+
   const addTeam = () => {
     if (teams.length >= 6) {
       Alert.alert('Límite alcanzado', 'Máximo 6 equipos permitidos');
       return;
     }
     
+    const defaultTeamNames = ['Equipo Rojo', 'Equipo Azul', 'Equipo Verde', 'Equipo Naranja', 'Equipo Morado', 'Equipo Naranja Oscuro'];
+    
     const newTeam: Team = {
       id: teams.length + 1,
-      name: '',
+      name: defaultTeamNames[teams.length] || `Equipo ${teams.length + 1}`,
       score: 0,
       color: TEAM_COLORS[teams.length % TEAM_COLORS.length],
     };
     setTeams([...teams, newTeam]);
+    // No agregar el nuevo equipo a editingTeams para que se pueda borrar automáticamente
   };
 
   const removeTeam = (teamId: number) => {
@@ -88,6 +118,12 @@ export const TeamSetupScreen: React.FC<TeamSetupScreenProps> = ({ navigation, ro
     }
     
     setTeams(prevTeams => prevTeams.filter(team => team.id !== teamId));
+    // Limpiar el estado de edición para el equipo eliminado
+    setEditingTeams(prev => {
+      const newSet = new Set(prev);
+      newSet.delete(teamId);
+      return newSet;
+    });
   };
 
   const startGame = () => {
@@ -103,7 +139,9 @@ export const TeamSetupScreen: React.FC<TeamSetupScreenProps> = ({ navigation, ro
       ...route.params,
       teams: validTeams,
       gameMode: 'teams',
-      numberOfRounds
+      numberOfRounds,
+      selectedCategory,
+      timePerRound
     });
   };
 
@@ -140,6 +178,72 @@ export const TeamSetupScreen: React.FC<TeamSetupScreenProps> = ({ navigation, ro
           </View>
         </View>
 
+        <View style={styles.timeContainer}>
+          <Text style={styles.timeLabel}>Tiempo por ronda:</Text>
+          <View style={styles.timeSelector}>
+            {[15, 30, 45, 60, 90].map((seconds) => (
+              <TouchableOpacity
+                key={seconds}
+                style={[
+                  styles.timeButton,
+                  timePerRound === seconds && styles.timeButtonSelected
+                ]}
+                onPress={() => setTimePerRound(seconds)}
+              >
+                <Text style={[
+                  styles.timeButtonText,
+                  timePerRound === seconds && styles.timeButtonTextSelected
+                ]}>
+                  {seconds}s
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+
+        <View style={styles.categoryContainer}>
+          <Text style={styles.categoryLabel}>Categoría:</Text>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoryScrollView}>
+            <View style={styles.categorySelector}>
+              {/* Opción de categoría mixta */}
+              <TouchableOpacity
+                style={[
+                  styles.categoryButton,
+                  styles.mixedCategoryButton,
+                  !selectedCategory && styles.categoryButtonSelected
+                ]}
+                onPress={() => setSelectedCategory(undefined)}
+              >
+                <Text style={[
+                  styles.categoryButtonText,
+                  !selectedCategory && styles.categoryButtonTextSelected
+                ]}>
+                  🎲 Mixta
+                </Text>
+              </TouchableOpacity>
+              
+              {/* Categorías específicas */}
+              {categories.map((category) => (
+                <TouchableOpacity
+                  key={category.name}
+                  style={[
+                    styles.categoryButton,
+                    selectedCategory === category.name && styles.categoryButtonSelected
+                  ]}
+                  onPress={() => setSelectedCategory(category.name)}
+                >
+                  <Text style={[
+                    styles.categoryButtonText,
+                    selectedCategory === category.name && styles.categoryButtonTextSelected
+                  ]}>
+                    {category.displayName}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </ScrollView>
+        </View>
+
         <View style={styles.teamsContainer}>
           {teams.map((team, index) => (
             <View key={team.id} style={styles.teamCard}>
@@ -160,10 +264,11 @@ export const TeamSetupScreen: React.FC<TeamSetupScreenProps> = ({ navigation, ro
               
               <TextInput
                 style={styles.teamInput}
-                placeholder={`Nombre del equipo ${index + 1}`}
+                placeholder="Toca para cambiar el nombre"
                 value={team.name}
                 onChangeText={(text) => updateTeamName(team.id, text)}
                 maxLength={20}
+                onFocus={() => handleTeamNameFocus(team.id)}
               />
             </View>
           ))}
@@ -247,6 +352,73 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   roundsButtonTextSelected: {
+    fontWeight: 'bold',
+  },
+  timeContainer: {
+    marginBottom: 32,
+  },
+  timeLabel: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#2C3E50',
+    marginBottom: 8,
+  },
+  timeSelector: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  timeButton: {
+    backgroundColor: '#3498DB',
+    borderRadius: 12,
+    padding: 16,
+    alignItems: 'center',
+  },
+  timeButtonSelected: {
+    backgroundColor: '#27AE60',
+  },
+  timeButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  timeButtonTextSelected: {
+    fontWeight: 'bold',
+  },
+  categoryContainer: {
+    marginBottom: 32,
+  },
+  categoryLabel: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#2C3E50',
+    marginBottom: 8,
+  },
+  categoryScrollView: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  categorySelector: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  categoryButton: {
+    backgroundColor: '#3498DB',
+    borderRadius: 12,
+    padding: 16,
+    alignItems: 'center',
+  },
+  mixedCategoryButton: {
+    backgroundColor: '#95A5A6',
+  },
+  categoryButtonSelected: {
+    backgroundColor: '#27AE60',
+  },
+  categoryButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  categoryButtonTextSelected: {
     fontWeight: 'bold',
   },
   teamsContainer: {

@@ -27,7 +27,8 @@ const SWIPE_THRESHOLD = screenWidth * 0.25;
 export const GameScreen: React.FC<GameScreenProps> = ({ navigation, roundPloc, route }) => {
   const [state, setState] = useState<RoundPlocState>(roundPloc.getState());
   const [selectedWordIndex, setSelectedWordIndex] = useState<number | null>(null);
-  const [timeLeft, setTimeLeft] = useState<number>(30);
+  const timePerRound = route?.params?.timePerRound || 30; // Usar tiempo configurado
+  const [timeLeft, setTimeLeft] = useState<number>(timePerRound);
   const [timerActive, setTimerActive] = useState<boolean>(false);
   const pan = useRef(new Animated.ValueXY()).current;
   const opacity = useRef(new Animated.Value(1)).current;
@@ -74,7 +75,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({ navigation, roundPloc, r
   // Inicializar timer cuando comienza una nueva ronda en modo equipos
   useEffect(() => {
     if (state.gameState === GameState.PLAYING && state.gameMode === 'teams') {
-      setTimeLeft(30);
+      setTimeLeft(timePerRound);
       setTimerActive(true);
     } else {
       setTimerActive(false);
@@ -126,16 +127,8 @@ export const GameScreen: React.FC<GameScreenProps> = ({ navigation, roundPloc, r
 
   const handleTimeUp = () => {
     if (state.gameMode === 'teams') {
-      Alert.alert(
-        '¡Tiempo agotado!',
-        `Se acabó el tiempo para ${state.currentTeam?.name}. Puntuación: ${state.score}/5`,
-        [
-          {
-            text: 'Siguiente equipo',
-            onPress: () => roundPloc.nextTeamTurn(),
-          },
-        ]
-      );
+      // Pasar automáticamente al siguiente equipo cuando se acaba el tiempo
+      roundPloc.nextTeamTurn();
     }
   };
 
@@ -176,7 +169,8 @@ export const GameScreen: React.FC<GameScreenProps> = ({ navigation, roundPloc, r
       ranking,
       winners,
       selectedCategory: route.params?.selectedCategory,
-      numberOfRounds: route.params?.numberOfRounds
+      numberOfRounds: route.params?.numberOfRounds,
+      timePerRound: route.params?.timePerRound
     });
   };
 
@@ -190,6 +184,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({ navigation, roundPloc, r
       gameMode: 'teams',
       numberOfRounds: route.params?.numberOfRounds,
       selectedCategory: route.params?.selectedCategory,
+      timePerRound: route.params?.timePerRound,
     });
   };
 

@@ -27,7 +27,8 @@ export const TeamResultsScreen: React.FC<TeamResultsScreenProps> = ({ navigation
           params: { 
             selectedCategory: route.params?.selectedCategory,
             previousTeams: ranking,
-            numberOfRounds: route.params?.numberOfRounds
+            numberOfRounds: route.params?.numberOfRounds,
+            timePerRound: route.params?.timePerRound
           } 
         }
       ],

@@ -17,6 +17,7 @@ interface TeamTransitionScreenProps {
 
 export const TeamTransitionScreen: React.FC<TeamTransitionScreenProps> = ({ navigation, route, roundPloc }) => {
   const { currentTeam, roundNumber, maxRounds } = route.params;
+  const timePerRound = route.params?.timePerRound || 30;
 
   const handleStartRound = async () => {
     await roundPloc.startTeamRound();
@@ -47,7 +48,7 @@ export const TeamTransitionScreen: React.FC<TeamTransitionScreenProps> = ({ navi
             • Pasa el móvil al equipo {currentTeam.name}
           </Text>
           <Text style={styles.instructionText}>
-            • Tendrán 30 segundos para acertar las 5 palabras
+            • Tendrán {timePerRound} segundos para acertar las 5 palabras
           </Text>
           <Text style={styles.instructionText}>
             • Toca ✓ si aciertan o ✗ si fallan cada palabra

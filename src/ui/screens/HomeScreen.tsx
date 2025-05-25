@@ -34,12 +34,21 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, storageServi
     }
   };
 
-  const handleStartGame = () => {
-    navigation.navigate('Categories');
-  };
-
   const handleQuickPlay = () => {
-    navigation.navigate('Game', { selectedCategory: undefined });
+    // Configuración predeterminada para juego rápido
+    const quickTeams = [
+      { id: 1, name: 'Equipo Rojo', score: 0, color: '#E74C3C' },
+      { id: 2, name: 'Equipo Azul', score: 0, color: '#3498DB' }
+    ];
+
+    // Navegar directamente al juego con configuración predeterminada
+    navigation.navigate('Game', {
+      teams: quickTeams,
+      gameMode: 'teams',
+      numberOfRounds: 1,
+      selectedCategory: undefined, // Categoría mixta
+      timePerRound: 30 // 30 segundos por defecto
+    });
   };
 
   const handleTeamPlay = () => {
@@ -65,10 +74,6 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, storageServi
         },
       ]
     );
-  };
-
-  const handleViewStats = () => {
-    navigation.navigate('Stats');
   };
 
   const handleSettings = () => {
@@ -123,20 +128,12 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, storageServi
         </View>
 
         <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.playButton} onPress={handleStartGame}>
-            <Text style={styles.playButtonText}>Elegir categoría</Text>
-          </TouchableOpacity>
-
           <TouchableOpacity style={styles.quickPlayButton} onPress={handleQuickPlay}>
-            <Text style={styles.quickPlayButtonText}>Juego rápido (mixto)</Text>
+            <Text style={styles.quickPlayButtonText}>🚀 Juego rápido</Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.teamPlayButton} onPress={handleTeamPlay}>
-            <Text style={styles.teamPlayButtonText}>🏆 Jugar por equipos</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.statsButton} onPress={handleViewStats}>
-            <Text style={styles.statsButtonText}>Ver estadísticas</Text>
+            <Text style={styles.teamPlayButtonText}>🏆 Configurar equipos</Text>
           </TouchableOpacity>
 
           {!stats?.hasUserDonated && (
@@ -303,24 +300,11 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
   quickPlayButton: {
-    backgroundColor: 'white',
+    backgroundColor: '#27AE60',
     borderRadius: 12,
-    paddingVertical: 16,
+    paddingVertical: 20,
     alignItems: 'center',
-    borderWidth: 2,
-    borderColor: '#27AE60',
-  },
-  quickPlayButtonText: {
-    color: '#27AE60',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  teamPlayButton: {
-    backgroundColor: '#9B59B6',
-    borderRadius: 12,
-    paddingVertical: 16,
-    alignItems: 'center',
-    shadowColor: '#9B59B6',
+    shadowColor: '#27AE60',
     shadowOffset: {
       width: 0,
       height: 4,
@@ -329,8 +313,21 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 6,
   },
-  teamPlayButtonText: {
+  quickPlayButtonText: {
     color: 'white',
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  teamPlayButton: {
+    backgroundColor: 'white',
+    borderRadius: 12,
+    paddingVertical: 16,
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: '#9B59B6',
+  },
+  teamPlayButtonText: {
+    color: '#9B59B6',
     fontSize: 16,
     fontWeight: '600',
   },
