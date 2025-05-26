@@ -255,4 +255,5 @@ Desarrollado con ❤️ para la comunidad de jugadores de palabras.
 
 ---
 
-¿Tienes preguntas o sugerencias? ¡Abre un issue en el repositorio! 
+¿Tienes preguntas o sugerencias? ¡Abre un issue en el repositorio! #   c o m o s e l l a m a  
+ 
