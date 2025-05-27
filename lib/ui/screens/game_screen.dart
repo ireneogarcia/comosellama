@@ -5,13 +5,15 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'team_transition_screen.dart';
 import 'team_results_screen.dart';
 import '../../core/models/team.dart';
+import '../../core/services/feedback_service.dart';
 
-class GameScreen extends StatelessWidget {
+class GameScreen extends StatefulWidget {
   final String category;
   final Team? team;
   final int? currentRound;
   final int? totalRounds;
   final List<Team>? allTeams;
+  final int timeLimit;
   
   const GameScreen({
     super.key,
@@ -20,7 +22,23 @@ class GameScreen extends StatelessWidget {
     this.currentRound,
     this.totalRounds,
     this.allTeams,
+    this.timeLimit = 60,
   });
+
+  @override
+  State<GameScreen> createState() => _GameScreenState();
+}
+
+class _GameScreenState extends State<GameScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // Resetear el estado del RoundPloc cuando se crea una nueva instancia
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final roundPloc = Provider.of<RoundPloc>(context, listen: false);
+      roundPloc.resetState();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,14 +63,15 @@ class GameScreen extends StatelessWidget {
                   score: state.round!.score,
                   totalWords: state.round!.words.length,
                   currentWordIndex: state.round!.currentWordIndex,
-                  onSwipe: (right) => roundPloc.handleSwipe(right),
-                  team: team,
+                  onSwipe: (right) => _handleSwipe(roundPloc, right),
+                  team: widget.team,
+                  primaryColor: Theme.of(context).primaryColor,
                 );
                 
               case RoundStatus.paused:
                 return _PausedView(
                   onResume: () => roundPloc.resumeRound(),
-                  team: team,
+                  team: widget.team,
                 );
                 
               case RoundStatus.finished:
@@ -75,7 +94,10 @@ class GameScreen extends StatelessWidget {
       builder: (context, roundPloc, child) {
         if (roundPloc.state.status == RoundStatus.playing) {
           return FloatingActionButton(
-            onPressed: () => roundPloc.pauseRound(),
+            onPressed: () {
+              FeedbackService().buttonTapFeedback();
+              roundPloc.pauseRound();
+            },
             child: const Icon(Icons.pause),
           );
         }
@@ -84,66 +106,121 @@ class GameScreen extends StatelessWidget {
     );
   }
 
+  void _handleSwipe(RoundPloc roundPloc, bool right) {
+    // Proporcionar feedback inmediato
+    if (right) {
+      FeedbackService().correctAnswerFeedback();
+    } else {
+      FeedbackService().wrongAnswerFeedback();
+    }
+    
+    roundPloc.handleSwipe(right);
+  }
+
   void _startRound(RoundPloc roundPloc) {
     Future.microtask(() {
-      roundPloc.startNewRound(category: category);
+      roundPloc.startNewRound(
+        category: widget.category,
+        timeLimit: widget.timeLimit,
+      );
     });
   }
 
   Widget _handleGameFinished(BuildContext context, RoundPloc roundPloc) {
-    if (team != null && allTeams != null) {
-      // Modo por equipos
-      team!.score += roundPloc.state.round!.score;
-      
-      if (currentRound! < totalRounds!) {
-        // Siguiente ronda
-        final nextTeamIndex = allTeams!.indexOf(team!) + 1;
-        final nextTeam = nextTeamIndex < allTeams!.length 
-            ? allTeams![nextTeamIndex]
-            : allTeams![0];
-        final nextRound = nextTeamIndex >= allTeams!.length 
-            ? currentRound! + 1 
-            : currentRound!;
+    // Usar Future.microtask para asegurar que la navegación ocurra después del build
+    Future.microtask(() => _navigateAfterRound(context, roundPloc));
+    
+    // Mostrar una pantalla de carga mientras se navega
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            widget.team?.color ?? Theme.of(context).primaryColor,
+            (widget.team?.color ?? Theme.of(context).primaryColor).withOpacity(0.7),
+          ],
+        ),
+      ),
+      child: const Center(
+        child: CircularProgressIndicator(
+          color: Colors.white,
+        ),
+      ),
+    );
+  }
 
-        if (nextRound <= totalRounds!) {
-          return TeamTransitionScreen(
-            team: nextTeam,
-            currentRound: nextRound,
-            totalRounds: totalRounds!,
-            timeLimit: roundPloc.state.round!.timeLimit,
-            category: category,
-          );
-        }
-      }
+  void _navigateAfterRound(BuildContext context, RoundPloc roundPloc) {
+    if (widget.team != null && widget.allTeams != null) {
+      // Modo por equipos
+      widget.team!.score += roundPloc.state.round!.score;
       
-      // Juego terminado
-      return TeamResultsScreen(
-        teams: allTeams!,
-        onPlayAgain: () {
-          // Reiniciar puntuaciones
-          for (final team in allTeams!) {
-            team.score = 0;
-          }
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => TeamTransitionScreen(
-                team: allTeams![0],
-                currentRound: 1,
-                totalRounds: totalRounds!,
-                timeLimit: roundPloc.state.round!.timeLimit,
-                category: category,
-              ),
+      // Calcular siguiente equipo y ronda
+      final currentTeamIndex = widget.allTeams!.indexOf(widget.team!);
+      final nextTeamIndex = (currentTeamIndex + 1) % widget.allTeams!.length;
+      final nextTeam = widget.allTeams![nextTeamIndex];
+      
+      // Si volvemos al primer equipo, incrementamos la ronda
+      final nextRound = nextTeamIndex == 0 ? widget.currentRound! + 1 : widget.currentRound!;
+
+      if (nextRound <= widget.totalRounds!) {
+        // Continuar con el siguiente turno
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => TeamTransitionScreen(
+              team: nextTeam,
+              currentRound: nextRound,
+              totalRounds: widget.totalRounds!,
+              timeLimit: widget.timeLimit,
+              category: widget.category,
+              allTeams: widget.allTeams!,
             ),
-          );
-        },
+          ),
+        );
+      } else {
+        // Juego terminado - ir a resultados
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => TeamResultsScreen(
+              teams: widget.allTeams!,
+              onPlayAgain: () {
+                // Reiniciar puntuaciones
+                for (final team in widget.allTeams!) {
+                  team.score = 0;
+                }
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => TeamTransitionScreen(
+                      team: widget.allTeams![0],
+                      currentRound: 1,
+                      totalRounds: widget.totalRounds!,
+                      timeLimit: widget.timeLimit,
+                      category: widget.category,
+                      allTeams: widget.allTeams!,
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        );
+      }
+    } else {
+      // Modo individual - mostrar estadísticas
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => Scaffold(
+            body: _FinishedView(
+              stats: roundPloc.getStats(),
+            ),
+          ),
+        ),
       );
     }
-
-    // Modo individual
-    return _FinishedView(
-      stats: roundPloc.getStats(),
-    );
   }
 }
 
@@ -155,6 +232,7 @@ class _GameView extends StatelessWidget {
   final int currentWordIndex;
   final Function(bool) onSwipe;
   final Team? team;
+  final Color primaryColor;
 
   const _GameView({
     required this.word,
@@ -164,108 +242,272 @@ class _GameView extends StatelessWidget {
     required this.currentWordIndex,
     required this.onSwipe,
     this.team,
+    required this.primaryColor,
   });
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onHorizontalDragEnd: (details) {
-        if (details.primaryVelocity == null) return;
-        onSwipe(details.primaryVelocity! > 0);
-      },
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          if (team != null) _buildTeamHeader(),
-          _buildTimer(),
-          const SizedBox(height: 40),
-          _buildWord(),
-          const SizedBox(height: 40),
-          _buildProgress(),
-          const SizedBox(height: 20),
-          _buildSwipeInstructions(),
-        ],
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            team?.color.withOpacity(0.1) ?? primaryColor.withOpacity(0.1),
+            Colors.white,
+          ],
+        ),
+      ),
+      child: GestureDetector(
+        onHorizontalDragEnd: (details) {
+          if (details.primaryVelocity == null) return;
+          final isRightSwipe = details.primaryVelocity! > 0;
+          onSwipe(isRightSwipe);
+        },
+        child: Column(
+          children: [
+            if (team != null) _buildTeamHeader(),
+            _buildTimer(),
+            const SizedBox(height: 20),
+            _buildScore(),
+            const SizedBox(height: 30),
+            Expanded(
+              child: _buildWordSection(),
+            ),
+            _buildProgress(),
+            const SizedBox(height: 20),
+            _buildActionButtons(),
+            const SizedBox(height: 20),
+            _buildSwipeInstructions(),
+            const SizedBox(height: 20),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildTeamHeader() {
     return Container(
-      padding: const EdgeInsets.all(16),
-      color: team!.color.withOpacity(0.1),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          CircleAvatar(
-            backgroundColor: team!.color,
-            child: Text(
-              team!.name[0],
-              style: const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
+      width: double.infinity,
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: team!.color,
+        borderRadius: const BorderRadius.only(
+          bottomLeft: Radius.circular(20),
+          bottomRight: Radius.circular(20),
+        ),
+      ),
+      child: SafeArea(
+        bottom: false,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CircleAvatar(
+              backgroundColor: Colors.white,
+              radius: 25,
+              child: Text(
+                team!.name[0],
+                style: TextStyle(
+                  color: team!.color,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
               ),
             ),
-          ),
-          const SizedBox(width: 12),
-          Text(
-            team!.name,
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: team!.color,
+            const SizedBox(width: 16),
+            Text(
+              team!.name,
+              style: const TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildTimer() {
+    final isLowTime = timeRemaining <= 10;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      margin: const EdgeInsets.all(20),
+      padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+      decoration: BoxDecoration(
+        color: isLowTime ? Colors.red.withOpacity(0.1) : Colors.blue.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: isLowTime ? Colors.red : Colors.blue,
+          width: 2,
+        ),
+      ),
       child: Column(
         children: [
           Text(
             timeRemaining.toString(),
-            style: const TextStyle(
-              fontSize: 48,
+            style: TextStyle(
+              fontSize: 56,
               fontWeight: FontWeight.bold,
+              color: isLowTime ? Colors.red : Colors.blue,
+            ),
+          ).animate(
+            target: isLowTime ? 1 : 0,
+          ).shake(duration: const Duration(milliseconds: 500)),
+          Text(
+            'segundos restantes',
+            style: TextStyle(
+              fontSize: 16,
+              color: isLowTime ? Colors.red : Colors.blue,
             ),
           ),
-          const Text('segundos restantes'),
         ],
       ),
     );
   }
 
-  Widget _buildWord() {
+  Widget _buildScore() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      decoration: BoxDecoration(
+        color: Colors.green.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(15),
+        border: Border.all(color: Colors.green, width: 1),
+      ),
       child: Text(
-        word.toUpperCase(),
+        'Puntuación: $score',
         style: const TextStyle(
-          fontSize: 36,
+          fontSize: 20,
           fontWeight: FontWeight.bold,
+          color: Colors.green,
         ),
-      ).animate()
-        .fadeIn()
-        .scale(),
+      ),
+    );
+  }
+
+  Widget _buildWordSection() {
+    return Center(
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 20),
+        padding: const EdgeInsets.all(30),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 10,
+              offset: const Offset(0, 5),
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text(
+              'Palabra a adivinar:',
+              style: TextStyle(
+                fontSize: 18,
+                color: Colors.grey,
+              ),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              word.toUpperCase(),
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 42,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+              ),
+            ).animate()
+              .fadeIn(duration: const Duration(milliseconds: 300))
+              .scale(begin: const Offset(0.8, 0.8)),
+          ],
+        ),
+      ),
     );
   }
 
   Widget _buildProgress() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 40),
+      padding: const EdgeInsets.symmetric(horizontal: 30),
       child: Column(
         children: [
           LinearProgressIndicator(
             value: (currentWordIndex + 1) / totalWords,
-            minHeight: 10,
+            minHeight: 8,
+            backgroundColor: Colors.grey.withOpacity(0.3),
+            valueColor: AlwaysStoppedAnimation<Color>(
+              team?.color ?? primaryColor,
+            ),
           ),
           const SizedBox(height: 10),
           Text(
             'Palabra ${currentWordIndex + 1} de $totalWords',
-            style: const TextStyle(fontSize: 16),
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildActionButtons() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 40),
+      child: Row(
+        children: [
+          Expanded(
+            child: ElevatedButton.icon(
+              onPressed: () {
+                FeedbackService().wrongAnswerFeedback();
+                onSwipe(false);
+              },
+              icon: const Icon(Icons.close, size: 28),
+              label: const Text(
+                'FALLO',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: 15),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 20),
+          Expanded(
+            child: ElevatedButton.icon(
+              onPressed: () {
+                FeedbackService().correctAnswerFeedback();
+                onSwipe(true);
+              },
+              icon: const Icon(Icons.check, size: 28),
+              label: const Text(
+                'ACIERTO',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: 15),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+              ),
+            ),
           ),
         ],
       ),
@@ -273,19 +515,31 @@ class _GameView extends StatelessWidget {
   }
 
   Widget _buildSwipeInstructions() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.all(15),
+      decoration: BoxDecoration(
+        color: Colors.grey.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(15),
+      ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           _buildSwipeInstruction(
-            icon: Icons.arrow_back,
-            text: 'Desliza izquierda\npara FALLO',
+            icon: Icons.swipe_left,
+            text: 'Desliza ←',
             color: Colors.red,
           ),
+          const Text(
+            'o usa los botones',
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.grey,
+            ),
+          ),
           _buildSwipeInstruction(
-            icon: Icons.arrow_forward,
-            text: 'Desliza derecha\npara ACIERTO',
+            icon: Icons.swipe_right,
+            text: 'Desliza →',
             color: Colors.green,
           ),
         ],
@@ -299,14 +553,16 @@ class _GameView extends StatelessWidget {
     required Color color,
   }) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, color: color, size: 32),
+        Icon(icon, color: color, size: 24),
+        const SizedBox(height: 4),
         Text(
           text,
-          textAlign: TextAlign.center,
           style: TextStyle(
             color: color,
             fontSize: 12,
+            fontWeight: FontWeight.w500,
           ),
         ),
       ],
@@ -336,38 +592,101 @@ class _PausedView extends StatelessWidget {
           ],
         ),
       ),
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (team != null)
-              Text(
-                team!.name,
-                style: const TextStyle(
-                  fontSize: 24,
+      child: SafeArea(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(
+                Icons.pause_circle_filled,
+                size: 120,
+                color: Colors.white,
+              ).animate()
+                .scale(duration: const Duration(milliseconds: 500))
+                .then()
+                .shimmer(duration: const Duration(seconds: 2)),
+              const SizedBox(height: 40),
+              if (team != null) ...[
+                Text(
+                  team!.name,
+                  style: const TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(height: 20),
+              ],
+              const Text(
+                'JUEGO PAUSADO',
+                style: TextStyle(
+                  fontSize: 32,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
                 ),
+              ).animate()
+                .fadeIn()
+                .slideY(begin: 0.3),
+              const SizedBox(height: 20),
+              const Text(
+                'Tómate un respiro y continúa cuando estés listo',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 18,
+                  color: Colors.white70,
+                ),
               ),
-            const SizedBox(height: 20),
-            const Text(
-              'JUEGO PAUSADO',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
+              const SizedBox(height: 60),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  OutlinedButton.icon(
+                    onPressed: () => Navigator.pop(context),
+                    icon: const Icon(Icons.home, color: Colors.white),
+                    label: const Text(
+                      'Salir',
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.white,
+                      ),
+                    ),
+                    style: OutlinedButton.styleFrom(
+                      side: const BorderSide(color: Colors.white, width: 2),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 12,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                    ),
+                  ),
+                  ElevatedButton.icon(
+                    onPressed: onResume,
+                    icon: const Icon(Icons.play_arrow, size: 28),
+                    label: const Text(
+                      'Continuar',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: team?.color ?? Theme.of(context).primaryColor,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 32,
+                        vertical: 12,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: onResume,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white,
-                foregroundColor: team?.color ?? Theme.of(context).primaryColor,
-              ),
-              child: const Text('Continuar'),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -381,28 +700,188 @@ class _FinishedView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
+    final score = stats['score'] ?? 0;
+    final totalWords = stats['totalWords'] ?? 0;
+    final timeSpent = stats['timeSpent'] ?? 0;
+    final percentage = totalWords > 0 ? (score / totalWords * 100).round() : 0;
+    
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Theme.of(context).primaryColor,
+            Theme.of(context).primaryColor.withOpacity(0.7),
+          ],
+        ),
+      ),
+      child: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(
+                Icons.emoji_events,
+                size: 100,
+                color: Colors.amber,
+              ).animate()
+                .scale(duration: const Duration(milliseconds: 600))
+                .then()
+                .shimmer(duration: const Duration(seconds: 2)),
+              const SizedBox(height: 30),
+              const Text(
+                '¡RONDA TERMINADA!',
+                style: TextStyle(
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ).animate()
+                .fadeIn()
+                .slideY(begin: 0.3),
+              const SizedBox(height: 40),
+              Container(
+                padding: const EdgeInsets.all(24),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: Colors.white.withOpacity(0.3)),
+                ),
+                child: Column(
+                  children: [
+                    _buildStatRow(
+                      icon: Icons.star,
+                      label: 'Puntuación',
+                      value: '$score / $totalWords',
+                      color: Colors.amber,
+                    ),
+                    const SizedBox(height: 16),
+                    _buildStatRow(
+                      icon: Icons.percent,
+                      label: 'Porcentaje',
+                      value: '$percentage%',
+                      color: Colors.lightBlue,
+                    ),
+                    const SizedBox(height: 16),
+                    _buildStatRow(
+                      icon: Icons.timer,
+                      label: 'Tiempo usado',
+                      value: '$timeSpent segundos',
+                      color: Colors.orange,
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 40),
+              _buildPerformanceMessage(percentage),
+              const SizedBox(height: 40),
+              ElevatedButton.icon(
+                onPressed: () => Navigator.pop(context),
+                icon: const Icon(Icons.home),
+                label: const Text(
+                  'Volver al Menú',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  foregroundColor: Theme.of(context).primaryColor,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 32,
+                    vertical: 16,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildStatRow({
+    required IconData icon,
+    required String label,
+    required String value,
+    required Color color,
+  }) {
+    return Row(
+      children: [
+        Icon(icon, color: color, size: 24),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Text(
+            label,
+            style: const TextStyle(
+              fontSize: 18,
+              color: Colors.white70,
+            ),
+          ),
+        ),
+        Text(
+          value,
+          style: const TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPerformanceMessage(int percentage) {
+    String message;
+    IconData icon;
+    Color color;
+
+    if (percentage >= 80) {
+      message = '¡Excelente trabajo!';
+      icon = Icons.star;
+      color = Colors.amber;
+    } else if (percentage >= 60) {
+      message = '¡Buen trabajo!';
+      icon = Icons.thumb_up;
+      color = Colors.green;
+    } else if (percentage >= 40) {
+      message = 'No está mal, ¡sigue practicando!';
+      icon = Icons.trending_up;
+      color = Colors.orange;
+    } else {
+      message = '¡La práctica hace al maestro!';
+      icon = Icons.school;
+      color = Colors.blue;
+    }
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.2),
+        borderRadius: BorderRadius.circular(15),
+        border: Border.all(color: color.withOpacity(0.5)),
+      ),
+      child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Text(
-            '¡RONDA TERMINADA!',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 40),
-          Text(
-            'Puntuación: ${stats['score']} / ${stats['totalWords']}',
-            style: const TextStyle(fontSize: 20),
-          ),
-          const SizedBox(height: 20),
-          Text(
-            'Tiempo usado: ${stats['timeSpent']} segundos',
-            style: const TextStyle(fontSize: 16),
-          ),
-          const SizedBox(height: 40),
-          ElevatedButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Volver al Menú'),
+          Icon(icon, color: color, size: 28),
+          const SizedBox(width: 12),
+          Flexible(
+            child: Text(
+              message,
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: color,
+              ),
+              textAlign: TextAlign.center,
+            ),
           ),
         ],
       ),

@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart';
+import 'dart:async';
 import '../password/round.dart';
 import '../password/round_service.dart';
+import '../services/feedback_service.dart';
 
 enum RoundStatus {
   initial,
@@ -42,10 +44,18 @@ class RoundState {
 class RoundPloc extends ChangeNotifier {
   final RoundService _roundService;
   RoundState _state = RoundState();
+  Timer? _timer;
+  bool _hasWarned = false;
 
   RoundPloc(this._roundService);
 
   RoundState get state => _state;
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
 
   Future<void> startNewRound({
     String category = 'mixed',
@@ -53,6 +63,8 @@ class RoundPloc extends ChangeNotifier {
     int timeLimit = 60,
   }) async {
     try {
+      _timer?.cancel();
+      _hasWarned = false;
       _state = _state.copyWith(status: RoundStatus.loading);
       notifyListeners();
 
@@ -87,37 +99,48 @@ class RoundPloc extends ChangeNotifier {
     _roundService.handleSwipe(round, right);
 
     if (round.isFinished) {
-      _state = _state.copyWith(
-        status: RoundStatus.finished,
-        isTimerActive: false,
-      );
+      _finishRound();
     }
     
     notifyListeners();
   }
 
   void _startTimer() {
-    Future.delayed(const Duration(seconds: 1), () {
-      if (!_state.isTimerActive) return;
-
+    _timer?.cancel();
+    _timer = Timer.periodic(const Duration(milliseconds: 100), (timer) {
       final round = _state.round;
-      if (round == null) return;
+      if (round == null || !_state.isTimerActive) {
+        timer.cancel();
+        return;
+      }
+
+      // Advertencia cuando quedan 10 segundos
+      if (round.remainingTime <= 10 && round.remainingTime > 0 && !_hasWarned) {
+        _hasWarned = true;
+        FeedbackService().timeWarningFeedback();
+      }
 
       if (_roundService.isTimeUp(round)) {
-        _state = _state.copyWith(
-          status: RoundStatus.finished,
-          isTimerActive: false,
-        );
+        _finishRound();
+      } else {
         notifyListeners();
-      } else if (_state.status == RoundStatus.playing) {
-        notifyListeners();
-        _startTimer();
       }
     });
   }
 
+  void _finishRound() {
+    _timer?.cancel();
+    FeedbackService().roundEndFeedback();
+    _state = _state.copyWith(
+      status: RoundStatus.finished,
+      isTimerActive: false,
+    );
+    notifyListeners();
+  }
+
   void pauseRound() {
     if (_state.status == RoundStatus.playing) {
+      _state.round?.pause();
       _state = _state.copyWith(
         status: RoundStatus.paused,
         isTimerActive: false,
@@ -128,6 +151,7 @@ class RoundPloc extends ChangeNotifier {
 
   void resumeRound() {
     if (_state.status == RoundStatus.paused) {
+      _state.round?.resume();
       _state = _state.copyWith(
         status: RoundStatus.playing,
         isTimerActive: true,
@@ -140,5 +164,12 @@ class RoundPloc extends ChangeNotifier {
   Map<String, dynamic> getStats() {
     if (_state.round == null) return {};
     return _roundService.getRoundStats(_state.round!);
+  }
+
+  void resetState() {
+    _timer?.cancel();
+    _hasWarned = false;
+    _state = RoundState();
+    notifyListeners();
   }
 } 

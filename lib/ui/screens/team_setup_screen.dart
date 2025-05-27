@@ -252,6 +252,7 @@ class _TeamSetupScreenState extends State<TeamSetupScreen> {
           totalRounds: rounds,
           timeLimit: timeLimit,
           category: selectedCategory,
+          allTeams: teams,
         ),
       ),
     );

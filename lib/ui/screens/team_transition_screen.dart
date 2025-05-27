@@ -10,6 +10,7 @@ class TeamTransitionScreen extends StatelessWidget {
   final int totalRounds;
   final int timeLimit;
   final String category;
+  final List<Team> allTeams;
 
   const TeamTransitionScreen({
     super.key,
@@ -18,6 +19,7 @@ class TeamTransitionScreen extends StatelessWidget {
     required this.totalRounds,
     required this.timeLimit,
     required this.category,
+    required this.allTeams,
   });
 
   @override
@@ -108,6 +110,11 @@ class TeamTransitionScreen extends StatelessWidget {
       MaterialPageRoute(
         builder: (context) => GameScreen(
           category: category,
+          team: team,
+          currentRound: currentRound,
+          totalRounds: totalRounds,
+          timeLimit: timeLimit,
+          allTeams: allTeams,
         ),
       ),
     );

@@ -5,19 +5,27 @@ import 'core/password/word_repository.dart';
 import 'core/presentation/round_ploc.dart';
 import 'ui/screens/home_screen.dart';
 
-void main() {
-  runApp(const DeslizasApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  // Inicializar el repositorio de palabras
+  final wordRepository = WordRepository();
+  await wordRepository.initialize();
+  
+  runApp(DeslizasApp(wordRepository: wordRepository));
 }
 
 class DeslizasApp extends StatelessWidget {
-  const DeslizasApp({super.key});
+  final WordRepository wordRepository;
+  
+  const DeslizasApp({super.key, required this.wordRepository});
 
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        Provider(
-          create: (_) => WordRepository(),
+        Provider.value(
+          value: wordRepository,
         ),
         ProxyProvider<WordRepository, RoundService>(
           update: (_, wordRepository, __) => RoundService(wordRepository),
