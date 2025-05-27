@@ -1,65 +1,41 @@
-import 'package:flutter/services.dart';
 import 'package:vibration/vibration.dart';
 
 class FeedbackService {
-  static const FeedbackService _instance = FeedbackService._internal();
+  static final FeedbackService _instance = FeedbackService._internal();
   factory FeedbackService() => _instance;
-  const FeedbackService._internal();
+  FeedbackService._internal();
 
   /// Vibración para acierto (corta y suave)
-  Future<void> correctAnswerFeedback() async {
-    try {
-      if (await Vibration.hasVibrator() ?? false) {
-        await Vibration.vibrate(duration: 100);
-      }
-      await HapticFeedback.lightImpact();
-    } catch (e) {
-      // Silenciar errores de vibración
-    }
+  void correctAnswerFeedback() {
+    _vibrate(duration: 100);
   }
 
   /// Vibración para fallo (más larga)
-  Future<void> wrongAnswerFeedback() async {
-    try {
-      if (await Vibration.hasVibrator() ?? false) {
-        await Vibration.vibrate(duration: 200);
-      }
-      await HapticFeedback.mediumImpact();
-    } catch (e) {
-      // Silenciar errores de vibración
-    }
+  void wrongAnswerFeedback() {
+    _vibrate(duration: 200);
   }
 
   /// Vibración para botones (muy suave)
-  Future<void> buttonTapFeedback() async {
-    try {
-      await HapticFeedback.selectionClick();
-    } catch (e) {
-      // Silenciar errores de vibración
-    }
+  void buttonTapFeedback() {
+    _vibrate(duration: 50);
   }
 
   /// Vibración para tiempo agotándose
-  Future<void> timeWarningFeedback() async {
-    try {
-      if (await Vibration.hasVibrator() ?? false) {
-        await Vibration.vibrate(duration: 50);
-      }
-      await HapticFeedback.heavyImpact();
-    } catch (e) {
-      // Silenciar errores de vibración
-    }
+  void timeWarningFeedback() {
+    _vibrate(duration: 50);
   }
 
   /// Vibración para fin de ronda
-  Future<void> roundEndFeedback() async {
-    try {
-      if (await Vibration.hasVibrator() ?? false) {
-        await Vibration.vibrate(pattern: [0, 100, 50, 100]);
+  void roundEndFeedback() {
+    _vibrate(duration: 300);
+  }
+
+  // Método privado para vibrar
+  void _vibrate({required int duration}) {
+    Vibration.hasVibrator().then((hasVibrator) {
+      if (hasVibrator == true) {
+        Vibration.vibrate(duration: duration);
       }
-      await HapticFeedback.heavyImpact();
-    } catch (e) {
-      // Silenciar errores de vibración
-    }
+    });
   }
 } 

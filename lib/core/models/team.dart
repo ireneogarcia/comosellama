@@ -22,4 +22,19 @@ class Team {
       score: score ?? this.score,
     );
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is Team &&
+        other.name == name &&
+        other.color == color &&
+        other.score == score;
+  }
+
+  @override
+  int get hashCode => name.hashCode ^ color.hashCode ^ score.hashCode;
+
+  @override
+  String toString() => 'Team(name: $name, color: $color, score: $score)';
 } 

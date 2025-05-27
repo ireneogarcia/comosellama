@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:fl_chart/fl_chart.dart';
 import '../../core/models/team.dart';
+import '../widgets/statistics_chart.dart';
 
 class TeamResultsScreen extends StatelessWidget {
   final List<Team> teams;
@@ -52,7 +52,7 @@ class TeamResultsScreen extends StatelessWidget {
                   _buildTieSection(sortedTeams),
                   const SizedBox(height: 32),
                 ],
-                _buildChart(sortedTeams),
+                StatisticsChart(teams: sortedTeams),
                 const SizedBox(height: 24),
                 _buildScoreList(sortedTeams),
                 const Spacer(),
@@ -253,97 +253,6 @@ class TeamResultsScreen extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-
-  Widget _buildChart(List<Team> sortedTeams) {
-    return Container(
-      height: 200,
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withOpacity(0.3)),
-      ),
-      child: Column(
-        children: [
-          const Text(
-            'Puntuaciones',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
-          const SizedBox(height: 16),
-          Expanded(
-            child: BarChart(
-              BarChartData(
-                alignment: BarChartAlignment.spaceAround,
-                maxY: (sortedTeams.isNotEmpty ? sortedTeams.first.score : 0).toDouble() * 1.2,
-                barTouchData: BarTouchData(enabled: false),
-                titlesData: FlTitlesData(
-                  show: true,
-                  bottomTitles: AxisTitles(
-                    sideTitles: SideTitles(
-                      showTitles: true,
-                      getTitlesWidget: (value, meta) {
-                        final index = value.toInt();
-                        if (index >= 0 && index < sortedTeams.length) {
-                          return Padding(
-                            padding: const EdgeInsets.only(top: 8),
-                            child: Text(
-                              sortedTeams[index].name.length > 8
-                                  ? '${sortedTeams[index].name.substring(0, 8)}...'
-                                  : sortedTeams[index].name,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          );
-                        }
-                        return const Text('');
-                      },
-                    ),
-                  ),
-                  leftTitles: const AxisTitles(
-                    sideTitles: SideTitles(showTitles: false),
-                  ),
-                  topTitles: const AxisTitles(
-                    sideTitles: SideTitles(showTitles: false),
-                  ),
-                  rightTitles: const AxisTitles(
-                    sideTitles: SideTitles(showTitles: false),
-                  ),
-                ),
-                borderData: FlBorderData(show: false),
-                barGroups: sortedTeams.asMap().entries.map((entry) {
-                  final index = entry.key;
-                  final team = entry.value;
-                  final isWinner = index == 0 && _hasWinner(sortedTeams);
-                  
-                  return BarChartGroupData(
-                    x: index,
-                    barRods: [
-                      BarChartRodData(
-                        toY: team.score.toDouble(),
-                        color: isWinner ? Colors.amber : team.color,
-                        width: 30,
-                        borderRadius: const BorderRadius.vertical(
-                          top: Radius.circular(4),
-                        ),
-                      ),
-                    ],
-                  );
-                }).toList(),
-              ),
-            ).animate()
-              .slideY(begin: 1, duration: const Duration(milliseconds: 1000)),
-          ),
-        ],
-      ),
     );
   }
 

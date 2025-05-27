@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'game_screen.dart';
 import '../../core/models/team.dart';
-import '../../core/password/round.dart';
 
 class TeamTransitionScreen extends StatelessWidget {
   final Team team;

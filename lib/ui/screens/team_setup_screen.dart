@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'team_transition_screen.dart';
 import '../../core/models/team.dart';
 
@@ -19,176 +20,458 @@ class _TeamSetupScreenState extends State<TeamSetupScreen> {
   int timeLimit = 60;
   String selectedCategory = 'mixed';
 
+  final List<CategoryOption> categories = [
+    CategoryOption(value: 'mixed', name: 'Mixta', icon: '🎲', color: Colors.grey),
+    CategoryOption(value: 'animales', name: 'Animales', icon: '🐾', color: Colors.brown),
+    CategoryOption(value: 'objetos', name: 'Objetos', icon: '🏠', color: Colors.blue),
+    CategoryOption(value: 'comida', name: 'Comida', icon: '🍎', color: Colors.red),
+    CategoryOption(value: 'profesiones', name: 'Profesiones', icon: '👨‍⚕️', color: Colors.purple),
+    CategoryOption(value: 'deportes', name: 'Deportes', icon: '⚽', color: Colors.orange),
+    CategoryOption(value: 'colores', name: 'Colores', icon: '🎨', color: Colors.green),
+    CategoryOption(value: 'emociones', name: 'Emociones', icon: '😊', color: Colors.pink),
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Configuración de Equipos'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            _buildTeamsList(),
-            const SizedBox(height: 20),
-            _buildGameSettings(),
-            const Spacer(),
-            ElevatedButton(
-              onPressed: _startGame,
-              child: const Text('Comenzar Juego'),
-            ),
-          ],
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Theme.of(context).primaryColor.withOpacity(0.1),
+              Colors.white,
+            ],
+          ),
+        ),
+        child: SafeArea(
+          child: Column(
+            children: [
+              _buildHeader(),
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildTeamsSection(),
+                      const SizedBox(height: 30),
+                      _buildGameSettingsSection(),
+                      const SizedBox(height: 30),
+                      _buildCategorySection(),
+                      const SizedBox(height: 40),
+                    ],
+                  ),
+                ),
+              ),
+              _buildStartButton(),
+            ],
+          ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _addTeam,
-        child: const Icon(Icons.add),
-      ),
     );
   }
 
-  Widget _buildTeamsList() {
-    return Expanded(
-      child: ListView.builder(
-        itemCount: teams.length,
-        itemBuilder: (context, index) {
-          final team = teams[index];
-          return Card(
-            child: ListTile(
-              leading: CircleAvatar(
-                backgroundColor: team.color,
-                child: Text('${index + 1}'),
+  Widget _buildHeader() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Theme.of(context).primaryColor,
+        borderRadius: const BorderRadius.only(
+          bottomLeft: Radius.circular(30),
+          bottomRight: Radius.circular(30),
+        ),
+      ),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              IconButton(
+                onPressed: () => Navigator.pop(context),
+                icon: const Icon(Icons.arrow_back, color: Colors.white),
               ),
-              title: Text(team.name),
-              trailing: IconButton(
-                icon: const Icon(Icons.delete),
-                onPressed: () => _removeTeam(index),
+              const Expanded(
+                child: Text(
+                  'Configuración de Equipos',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
               ),
-              onTap: () => _editTeam(index),
+              const SizedBox(width: 48), // Para balancear el botón de atrás
+            ],
+          ),
+          const SizedBox(height: 10),
+          Text(
+            'Personaliza tu juego y ¡que comience la diversión!',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.white.withOpacity(0.9),
             ),
-          );
-        },
+          ),
+        ],
       ),
-    );
+    ).animate()
+      .fadeIn(duration: const Duration(milliseconds: 600))
+      .slideY(begin: -0.3);
   }
 
-  Widget _buildGameSettings() {
+  Widget _buildTeamsSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Configuración del Juego',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        const SizedBox(height: 10),
-        _buildSlider(
-          label: 'Rondas: $rounds',
-          value: rounds.toDouble(),
-          min: 1,
-          max: 5,
-          onChanged: (value) {
-            setState(() {
-              rounds = value.toInt();
-            });
-          },
-        ),
-        _buildSlider(
-          label: 'Tiempo por ronda: $timeLimit segundos',
-          value: timeLimit.toDouble(),
-          min: 30,
-          max: 90,
-          onChanged: (value) {
-            setState(() {
-              timeLimit = value.toInt();
-            });
-          },
+        Row(
+          children: [
+            const Icon(Icons.groups, color: Colors.blue, size: 28),
+            const SizedBox(width: 12),
+            const Text(
+              'Equipos',
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: Colors.blue,
+              ),
+            ),
+            const Spacer(),
+            if (teams.length < 6)
+              FloatingActionButton.small(
+                onPressed: _addTeam,
+                backgroundColor: Colors.blue,
+                child: const Icon(Icons.add, color: Colors.white),
+              ),
+          ],
         ),
         const SizedBox(height: 16),
-        DropdownButtonFormField<String>(
-          decoration: const InputDecoration(
-            labelText: 'Categoría',
-            border: OutlineInputBorder(),
-          ),
-          value: selectedCategory,
-          items: const [
-            DropdownMenuItem(
-              value: 'mixed',
-              child: Text('Mixta'),
-            ),
-            DropdownMenuItem(
-              value: 'animales',
-              child: Text('Animales'),
-            ),
-            DropdownMenuItem(
-              value: 'objetos',
-              child: Text('Objetos'),
-            ),
-            DropdownMenuItem(
-              value: 'comida',
-              child: Text('Comida'),
-            ),
-            DropdownMenuItem(
-              value: 'profesiones',
-              child: Text('Profesiones'),
-            ),
-            DropdownMenuItem(
-              value: 'deportes',
-              child: Text('Deportes'),
-            ),
-            DropdownMenuItem(
-              value: 'colores',
-              child: Text('Colores'),
-            ),
-            DropdownMenuItem(
-              value: 'emociones',
-              child: Text('Emociones'),
-            ),
-          ],
-          onChanged: (value) {
-            if (value != null) {
-              setState(() {
-                selectedCategory = value;
-              });
-            }
-          },
-        ),
+        ...teams.asMap().entries.map((entry) {
+          final index = entry.key;
+          final team = entry.value;
+          return _buildTeamCard(team, index);
+        }).toList(),
       ],
-    );
+    ).animate()
+      .fadeIn(duration: const Duration(milliseconds: 800))
+      .slideX(begin: -0.2);
   }
 
-  Widget _buildSlider({
-    required String label,
-    required double value,
-    required double min,
-    required double max,
-    required ValueChanged<double> onChanged,
-  }) {
+  Widget _buildTeamCard(Team team, int index) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+        leading: CircleAvatar(
+          backgroundColor: team.color,
+          radius: 25,
+          child: Text(
+            '${index + 1}',
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+            ),
+          ),
+        ),
+        title: Text(
+          team.name,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 16,
+          ),
+        ),
+        subtitle: Text(
+          'Toca para editar',
+          style: TextStyle(
+            color: Colors.grey.shade600,
+            fontSize: 12,
+          ),
+        ),
+        trailing: teams.length > 2
+            ? IconButton(
+                icon: Icon(Icons.delete_outline, color: Colors.red.shade400),
+                onPressed: () => _removeTeam(index),
+              )
+            : null,
+        onTap: () => _editTeam(index),
+      ),
+    ).animate(delay: Duration(milliseconds: 100 * index))
+      .fadeIn(duration: const Duration(milliseconds: 500))
+      .slideX(begin: 0.3);
+  }
+
+  Widget _buildGameSettingsSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label),
-        Slider(
-          value: value,
-          min: min,
-          max: max,
-          divisions: (max - min).toInt(),
-          onChanged: onChanged,
+        Row(
+          children: [
+            const Icon(Icons.settings, color: Colors.green, size: 28),
+            const SizedBox(width: 12),
+            const Text(
+              'Configuración del Juego',
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: Colors.green,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 20),
+        _buildSettingCard(
+          icon: Icons.repeat,
+          title: 'Rondas por equipo',
+          value: '$rounds',
+          color: Colors.blue,
+          child: Slider(
+            value: rounds.toDouble(),
+            min: 1,
+            max: 5,
+            divisions: 4,
+            activeColor: Colors.blue,
+            onChanged: (value) {
+              setState(() {
+                rounds = value.toInt();
+              });
+            },
+          ),
+        ),
+        const SizedBox(height: 16),
+        _buildSettingCard(
+          icon: Icons.timer,
+          title: 'Tiempo por ronda',
+          value: '$timeLimit seg',
+          color: Colors.orange,
+          child: Slider(
+            value: timeLimit.toDouble(),
+            min: 30,
+            max: 90,
+            divisions: 6,
+            activeColor: Colors.orange,
+            onChanged: (value) {
+              setState(() {
+                timeLimit = value.toInt();
+              });
+            },
+          ),
         ),
       ],
+    ).animate()
+      .fadeIn(duration: const Duration(milliseconds: 1000))
+      .slideX(begin: 0.2);
+  }
+
+  Widget _buildSettingCard({
+    required IconData icon,
+    required String title,
+    required String value,
+    required Color color,
+    required Widget child,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: color.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(icon, color: color, size: 24),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: color.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text(
+                  value,
+                  style: TextStyle(
+                    color: color,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          child,
+        ],
+      ),
     );
+  }
+
+  Widget _buildCategorySection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            const Icon(Icons.category, color: Colors.purple, size: 28),
+            const SizedBox(width: 12),
+            const Text(
+              'Categoría',
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: Colors.purple,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 16),
+        GridView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            crossAxisSpacing: 12,
+            mainAxisSpacing: 12,
+            childAspectRatio: 2.5,
+          ),
+          itemCount: categories.length,
+          itemBuilder: (context, index) {
+            final category = categories[index];
+            final isSelected = selectedCategory == category.value;
+            
+            return GestureDetector(
+              onTap: () {
+                setState(() {
+                  selectedCategory = category.value;
+                });
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  color: isSelected ? category.color : Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: isSelected ? category.color : Colors.grey.shade300,
+                    width: 2,
+                  ),
+                  boxShadow: isSelected ? [
+                    BoxShadow(
+                      color: category.color.withOpacity(0.3),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ] : [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 4,
+                      offset: const Offset(0, 1),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      category.icon,
+                      style: const TextStyle(fontSize: 20),
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      category.name,
+                      style: TextStyle(
+                        color: isSelected ? Colors.white : Colors.black87,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ).animate(delay: Duration(milliseconds: 50 * index))
+              .fadeIn(duration: const Duration(milliseconds: 400))
+              .scale(begin: const Offset(0.8, 0.8));
+          },
+        ),
+      ],
+    ).animate()
+      .fadeIn(duration: const Duration(milliseconds: 1200))
+      .slideY(begin: 0.2);
+  }
+
+  Widget _buildStartButton() {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      child: SizedBox(
+        width: double.infinity,
+        height: 60,
+        child: ElevatedButton(
+          onPressed: _startGame,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Theme.of(context).primaryColor,
+            foregroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(30),
+            ),
+            elevation: 8,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.play_arrow, size: 28),
+              const SizedBox(width: 12),
+              const Text(
+                'Comenzar Juego',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    ).animate()
+      .fadeIn(duration: const Duration(milliseconds: 1400))
+      .slideY(begin: 0.3);
   }
 
   void _addTeam() {
     if (teams.length >= 6) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Máximo 6 equipos permitidos'),
-        ),
-      );
+      _showSnackBar('Máximo 6 equipos permitidos', Colors.orange);
       return;
     }
 
@@ -202,11 +485,7 @@ class _TeamSetupScreenState extends State<TeamSetupScreen> {
 
   void _removeTeam(int index) {
     if (teams.length <= 2) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Mínimo 2 equipos requeridos'),
-        ),
-      );
+      _showSnackBar('Mínimo 2 equipos requeridos', Colors.red);
       return;
     }
 
@@ -220,6 +499,7 @@ class _TeamSetupScreenState extends State<TeamSetupScreen> {
       context: context,
       builder: (context) => _TeamNameDialog(
         initialName: teams[index].name,
+        teamColor: teams[index].color,
       ),
     );
 
@@ -257,13 +537,42 @@ class _TeamSetupScreenState extends State<TeamSetupScreen> {
       ),
     );
   }
+
+  void _showSnackBar(String message, Color color) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: color,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+      ),
+    );
+  }
+}
+
+class CategoryOption {
+  final String value;
+  final String name;
+  final String icon;
+  final Color color;
+
+  CategoryOption({
+    required this.value,
+    required this.name,
+    required this.icon,
+    required this.color,
+  });
 }
 
 class _TeamNameDialog extends StatefulWidget {
   final String initialName;
+  final Color teamColor;
 
   const _TeamNameDialog({
     required this.initialName,
+    required this.teamColor,
   });
 
   @override
@@ -288,26 +597,50 @@ class _TeamNameDialogState extends State<_TeamNameDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Editar Nombre'),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
+      title: Row(
+        children: [
+          CircleAvatar(
+            backgroundColor: widget.teamColor,
+            child: const Icon(Icons.edit, color: Colors.white),
+          ),
+          const SizedBox(width: 16),
+          const Text('Editar Equipo'),
+        ],
+      ),
       content: TextField(
         controller: _controller,
-        decoration: const InputDecoration(
+        decoration: InputDecoration(
           labelText: 'Nombre del equipo',
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          prefixIcon: const Icon(Icons.group),
         ),
         autofocus: true,
+        maxLength: 20,
       ),
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
           child: const Text('Cancelar'),
         ),
-        TextButton(
+        ElevatedButton(
           onPressed: () {
             final name = _controller.text.trim();
             if (name.isNotEmpty) {
               Navigator.pop(context, name);
             }
           },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: widget.teamColor,
+            foregroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
           child: const Text('Guardar'),
         ),
       ],

@@ -1,14 +1,4 @@
-class Word {
-  final String text;
-  final String category;
-  bool isGuessed;
-
-  Word({
-    required this.text,
-    required this.category,
-    this.isGuessed = false,
-  });
-}
+import '../models/word.dart';
 
 class Round {
   final List<Word> words;
@@ -70,4 +60,10 @@ class Round {
       pauseTime = null;
     }
   }
+
+  // Métodos para estadísticas
+  int get correctAnswers => words.where((word) => word.isGuessed).length;
+  int get wrongAnswers => words.where((word) => !word.isGuessed).length;
+  double get accuracy => words.isNotEmpty ? (correctAnswers / words.length) : 0.0;
+  int get timeSpent => timeLimit - remainingTime;
 } 

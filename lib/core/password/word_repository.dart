@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/services.dart';
-import 'round.dart';
+import '../models/word.dart';
 
 class WordRepository {
   Map<String, List<String>>? _words;
@@ -67,4 +67,6 @@ class WordRepository {
     }
     return 'mixed';
   }
+
+  List<String> get availableCategories => _words?.keys.toList() ?? [];
 } 

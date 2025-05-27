@@ -8,11 +8,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  shared_preferences: ^2.2.2
   provider: ^6.1.1
   flutter_animate: ^4.5.0
   vibration: ^1.8.4
-  audioplayers: ^5.2.1
   fl_chart: ^0.66.2
   
 dev_dependencies:

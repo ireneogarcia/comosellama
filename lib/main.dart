@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'core/password/round_service.dart';
 import 'core/password/word_repository.dart';
-import 'core/presentation/round_ploc.dart';
+import 'core/game/game_controller.dart';
+import 'ui/blocs/round_bloc.dart';
 import 'ui/screens/home_screen.dart';
 
 void main() async {
@@ -24,17 +25,26 @@ class DeslizasApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        Provider.value(
-          value: wordRepository,
-        ),
+        // Repositorio de palabras
+        Provider.value(value: wordRepository),
+        
+        // Servicio de rondas
         ProxyProvider<WordRepository, RoundService>(
           update: (_, wordRepository, __) => RoundService(wordRepository),
         ),
-        ChangeNotifierProxyProvider<RoundService, RoundPloc>(
-          create: (context) => RoundPloc(
-            Provider.of<RoundService>(context, listen: false),
+        
+        // Controlador de juego (lógica de negocio)
+        ProxyProvider<RoundService, GameController>(
+          update: (_, roundService, __) => GameController(roundService),
+        ),
+        
+        // Bloc de presentación
+        ChangeNotifierProxyProvider<GameController, RoundBloc>(
+          create: (context) => RoundBloc(
+            Provider.of<GameController>(context, listen: false),
           ),
-          update: (_, roundService, previous) => previous ?? RoundPloc(roundService),
+          update: (_, gameController, previous) => 
+              previous ?? RoundBloc(gameController),
         ),
       ],
       child: MaterialApp(

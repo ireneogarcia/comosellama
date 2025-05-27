@@ -11,15 +11,19 @@ class RoundService {
     int wordCount = 5,
     int timeLimit = 60,
   }) async {
-    final words = await _wordRepository.getWords(category: category, count: wordCount);
+    final words = await _wordRepository.getWords(
+      category: category,
+      count: wordCount,
+    );
+
     return Round(
       words: words,
       timeLimit: timeLimit,
     );
   }
 
-  void handleSwipe(Round round, bool right) {
-    round.markCurrentWord(right);
+  void handleSwipe(Round round, bool isCorrect) {
+    round.markCurrentWord(isCorrect);
   }
 
   bool isTimeUp(Round round) {
@@ -29,9 +33,11 @@ class RoundService {
   Map<String, dynamic> getRoundStats(Round round) {
     return {
       'score': round.score,
+      'correctAnswers': round.correctAnswers,
+      'wrongAnswers': round.wrongAnswers,
+      'accuracy': round.accuracy,
+      'timeSpent': round.timeSpent,
       'totalWords': round.words.length,
-      'timeSpent': round.timeLimit - round.remainingTime,
-      'category': round.words.first.category,
     };
   }
 } 

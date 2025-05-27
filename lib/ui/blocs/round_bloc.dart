@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'dart:async';
-import '../password/round.dart';
-import '../password/round_service.dart';
-import '../services/feedback_service.dart';
+import '../../core/password/round.dart';
+import '../../core/game/game_controller.dart';
+import '../../core/services/feedback_service.dart';
 
 enum RoundStatus {
   initial,
@@ -41,13 +41,13 @@ class RoundState {
   }
 }
 
-class RoundPloc extends ChangeNotifier {
-  final RoundService _roundService;
+class RoundBloc extends ChangeNotifier {
+  final GameController _gameController;
   RoundState _state = RoundState();
   Timer? _timer;
   bool _hasWarned = false;
 
-  RoundPloc(this._roundService);
+  RoundBloc(this._gameController);
 
   RoundState get state => _state;
 
@@ -68,7 +68,7 @@ class RoundPloc extends ChangeNotifier {
       _state = _state.copyWith(status: RoundStatus.loading);
       notifyListeners();
 
-      final round = await _roundService.createRound(
+      final round = await _gameController.createRound(
         category: category,
         wordCount: wordCount,
         timeLimit: timeLimit,
@@ -92,13 +92,19 @@ class RoundPloc extends ChangeNotifier {
     }
   }
 
-  void handleSwipe(bool right) {
+  void handleAnswer(bool isCorrect) {
     if (_state.status != RoundStatus.playing) return;
     
-    final round = _state.round!;
-    _roundService.handleSwipe(round, right);
+    // Proporcionar feedback inmediato
+    if (isCorrect) {
+      FeedbackService().correctAnswerFeedback();
+    } else {
+      FeedbackService().wrongAnswerFeedback();
+    }
+    
+    _gameController.handleAnswer(isCorrect);
 
-    if (round.isFinished) {
+    if (_state.round!.isFinished) {
       _finishRound();
     }
     
@@ -120,7 +126,7 @@ class RoundPloc extends ChangeNotifier {
         FeedbackService().timeWarningFeedback();
       }
 
-      if (_roundService.isTimeUp(round)) {
+      if (_gameController.isTimeUp()) {
         _finishRound();
       } else {
         notifyListeners();
@@ -161,9 +167,8 @@ class RoundPloc extends ChangeNotifier {
     }
   }
 
-  Map<String, dynamic> getStats() {
-    if (_state.round == null) return {};
-    return _roundService.getRoundStats(_state.round!);
+  Map<String, dynamic> finishRound() {
+    return _gameController.finishCurrentRound();
   }
 
   void resetState() {

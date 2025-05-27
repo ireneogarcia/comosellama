@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../core/presentation/round_ploc.dart';
+import '../blocs/round_bloc.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'team_transition_screen.dart';
 import 'team_results_screen.dart';
@@ -33,10 +33,10 @@ class _GameScreenState extends State<GameScreen> {
   @override
   void initState() {
     super.initState();
-    // Resetear el estado del RoundPloc cuando se crea una nueva instancia
+    // Resetear el estado del RoundBloc cuando se crea una nueva instancia
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final roundPloc = Provider.of<RoundPloc>(context, listen: false);
-      roundPloc.resetState();
+      final roundBloc = Provider.of<RoundBloc>(context, listen: false);
+      roundBloc.resetState();
     });
   }
 
@@ -44,13 +44,13 @@ class _GameScreenState extends State<GameScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Consumer<RoundPloc>(
-          builder: (context, roundPloc, child) {
-            final state = roundPloc.state;
+        child: Consumer<RoundBloc>(
+          builder: (context, roundBloc, child) {
+            final state = roundBloc.state;
             
             switch (state.status) {
               case RoundStatus.initial:
-                _startRound(roundPloc);
+                _startRound(roundBloc);
                 return const Center(child: CircularProgressIndicator());
                 
               case RoundStatus.loading:
@@ -63,19 +63,19 @@ class _GameScreenState extends State<GameScreen> {
                   score: state.round!.score,
                   totalWords: state.round!.words.length,
                   currentWordIndex: state.round!.currentWordIndex,
-                  onSwipe: (right) => _handleSwipe(roundPloc, right),
+                  onSwipe: (right) => _handleSwipe(roundBloc, right),
                   team: widget.team,
                   primaryColor: Theme.of(context).primaryColor,
                 );
                 
               case RoundStatus.paused:
                 return _PausedView(
-                  onResume: () => roundPloc.resumeRound(),
+                  onResume: () => roundBloc.resumeRound(),
                   team: widget.team,
                 );
                 
               case RoundStatus.finished:
-                return _handleGameFinished(context, roundPloc);
+                return _handleGameFinished(context, roundBloc);
                 
               case RoundStatus.error:
                 return Center(
@@ -90,13 +90,13 @@ class _GameScreenState extends State<GameScreen> {
   }
 
   Widget _buildFAB(BuildContext context) {
-    return Consumer<RoundPloc>(
-      builder: (context, roundPloc, child) {
-        if (roundPloc.state.status == RoundStatus.playing) {
+    return Consumer<RoundBloc>(
+      builder: (context, roundBloc, child) {
+        if (roundBloc.state.status == RoundStatus.playing) {
           return FloatingActionButton(
             onPressed: () {
               FeedbackService().buttonTapFeedback();
-              roundPloc.pauseRound();
+              roundBloc.pauseRound();
             },
             child: const Icon(Icons.pause),
           );
@@ -106,29 +106,22 @@ class _GameScreenState extends State<GameScreen> {
     );
   }
 
-  void _handleSwipe(RoundPloc roundPloc, bool right) {
-    // Proporcionar feedback inmediato
-    if (right) {
-      FeedbackService().correctAnswerFeedback();
-    } else {
-      FeedbackService().wrongAnswerFeedback();
-    }
-    
-    roundPloc.handleSwipe(right);
+  void _handleSwipe(RoundBloc roundBloc, bool right) {
+    roundBloc.handleAnswer(right);
   }
 
-  void _startRound(RoundPloc roundPloc) {
+  void _startRound(RoundBloc roundBloc) {
     Future.microtask(() {
-      roundPloc.startNewRound(
+      roundBloc.startNewRound(
         category: widget.category,
         timeLimit: widget.timeLimit,
       );
     });
   }
 
-  Widget _handleGameFinished(BuildContext context, RoundPloc roundPloc) {
+  Widget _handleGameFinished(BuildContext context, RoundBloc roundBloc) {
     // Usar Future.microtask para asegurar que la navegación ocurra después del build
-    Future.microtask(() => _navigateAfterRound(context, roundPloc));
+    Future.microtask(() => _navigateAfterRound(context, roundBloc));
     
     // Mostrar una pantalla de carga mientras se navega
     return Container(
@@ -150,10 +143,10 @@ class _GameScreenState extends State<GameScreen> {
     );
   }
 
-  void _navigateAfterRound(BuildContext context, RoundPloc roundPloc) {
+  void _navigateAfterRound(BuildContext context, RoundBloc roundBloc) {
     if (widget.team != null && widget.allTeams != null) {
       // Modo por equipos
-      widget.team!.score += roundPloc.state.round!.score;
+      widget.team!.score += roundBloc.state.round!.score;
       
       // Calcular siguiente equipo y ronda
       final currentTeamIndex = widget.allTeams!.indexOf(widget.team!);
@@ -215,7 +208,7 @@ class _GameScreenState extends State<GameScreen> {
         MaterialPageRoute(
           builder: (context) => Scaffold(
             body: _FinishedView(
-              stats: roundPloc.getStats(),
+              stats: roundBloc.finishRound(),
             ),
           ),
         ),

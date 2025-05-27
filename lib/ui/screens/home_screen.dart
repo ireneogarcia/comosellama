@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'category_screen.dart';
+import 'quick_game_category_screen.dart';
 import 'team_setup_screen.dart';
 import 'stats_screen.dart';
 import 'settings_screen.dart';
@@ -70,7 +70,7 @@ class HomeScreen extends StatelessWidget {
           text: 'Juego Rápido',
           onPressed: () => Navigator.push(
             context,
-            MaterialPageRoute(builder: (_) => const CategoryScreen()),
+            MaterialPageRoute(builder: (_) => const QuickGameCategoryScreen()),
           ),
         ),
         const SizedBox(height: 20),
