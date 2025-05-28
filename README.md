@@ -159,9 +159,11 @@ por ahora no implementar servicios de anuncios, prueba el código siempre antes 
 * [x] Pantalla de configuración
 * [x] Juego por equipos
 * [ ] Sonidos y vibración
-* [ ] Modo multijugador online
 * [ ] Personalización de palabras y temas
 * [ ] Modo de dificultad y práctica
+
+## como ejecutar
+usar el comando flutter run -d chrome
 
 ## 🤝 Contribuir
 
