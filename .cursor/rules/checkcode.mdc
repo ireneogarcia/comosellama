@@ -1,0 +1,6 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+ejecuta: flutter run -d chrome antes de acabar para verificar que todo esta correcto, si no lo esta haz todos los cambios necesarios.

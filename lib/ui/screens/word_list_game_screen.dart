@@ -254,9 +254,7 @@ class _WordListGameScreenState extends State<WordListGameScreen> {
     return Column(
       children: [
         if (widget.team != null) _buildTeamHeader(),
-        _buildTimer(),
-        const SizedBox(height: 15),
-        _buildScore(),
+        _buildTimerAndScore(),
         const SizedBox(height: 20),
         Expanded(
           child: _buildWordsList(words),
@@ -332,8 +330,10 @@ class _WordListGameScreenState extends State<WordListGameScreen> {
       .slideY(begin: -0.3);
   }
 
-  Widget _buildTimer() {
+  Widget _buildTimerAndScore() {
     final isLowTime = timeRemaining <= 10;
+    final score = wordAnswers.values.where((answer) => answer == true).length;
+    
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20),
       padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
@@ -352,64 +352,77 @@ class _WordListGameScreenState extends State<WordListGameScreen> {
           ),
         ],
       ),
-      child: Column(
-        children: [
-          Text(
-            timeRemaining.toString(),
-            style: const TextStyle(
-              fontSize: 48,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ).animate(
-            target: isLowTime ? 1 : 0,
-          ).shake(duration: const Duration(milliseconds: 500)),
-          Text(
-            'segundos restantes',
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.white.withOpacity(0.9),
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildScore() {
-    final score = wordAnswers.values.where((answer) => answer == true).length;
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20),
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [DopamineColors.successGreen, DopamineColors.accent2],
-        ),
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: DopamineColors.successGreen.withOpacity(0.4),
-            blurRadius: 15,
-            offset: const Offset(0, 8),
-          ),
-        ],
-      ),
       child: Row(
-        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          const Icon(
-            Icons.star,
-            color: Colors.white,
-            size: 24,
+          // Timer
+          Expanded(
+            child: Column(
+              children: [
+                Text(
+                  timeRemaining.toString(),
+                  style: const TextStyle(
+                    fontSize: 36,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ).animate(
+                  target: isLowTime ? 1 : 0,
+                ).shake(duration: const Duration(milliseconds: 500)),
+                Text(
+                  'segundos',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.white.withOpacity(0.9),
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
           ),
-          const SizedBox(width: 8),
-          Text(
-            'Puntuación: $score',
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
+          
+          // Separador
+          Container(
+            width: 2,
+            height: 50,
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.3),
+              borderRadius: BorderRadius.circular(1),
+            ),
+          ),
+          
+          // Score
+          Expanded(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.star,
+                  color: Colors.white,
+                  size: 28,
+                ),
+                const SizedBox(width: 8),
+                Column(
+                  children: [
+                    Text(
+                      score.toString(),
+                      style: const TextStyle(
+                        fontSize: 36,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    Text(
+                      'aciertos',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.white.withOpacity(0.9),
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
         ],
@@ -418,63 +431,66 @@ class _WordListGameScreenState extends State<WordListGameScreen> {
   }
 
   Widget _buildWordsList(List<dynamic> words) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Column(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [DopamineColors.secondaryPink, DopamineColors.primaryPurple],
-              ),
-              borderRadius: BorderRadius.circular(15),
-            ),
-            child: Row(
-              children: [
-                const Icon(
-                  Icons.touch_app,
-                  color: Colors.white,
-                  size: 24,
+    return Center(
+      child: Container(
+        constraints: const BoxConstraints(maxWidth: 600),
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Column(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [DopamineColors.secondaryPink, DopamineColors.primaryPurple],
                 ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    'Desliza → o toca para marcar aciertos',
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: Row(
+                children: [
+                  const Icon(
+                    Icons.touch_app,
+                    color: Colors.white,
+                    size: 24,
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      'Desliza → o toca para marcar aciertos',
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          const SizedBox(height: 20),
-          Expanded(
-            child: ListView.builder(
-              itemCount: words.length,
-              itemBuilder: (context, index) {
-                final word = words[index];
-                final isChecked = wordAnswers[index] == true;
-                
-                return _SwipeableWordCard(
-                  word: word.text,
-                  isChecked: isChecked,
-                  isGameActive: isGameActive,
-                  onToggle: () {
-                    FeedbackService().correctAnswerFeedback();
-                    setState(() {
-                      wordAnswers[index] = isChecked ? null : true;
-                    });
-                  },
-                  index: index,
-                );
-              },
+            const SizedBox(height: 20),
+            Expanded(
+              child: ListView.builder(
+                itemCount: words.length,
+                itemBuilder: (context, index) {
+                  final word = words[index];
+                  final isChecked = wordAnswers[index] == true;
+                  
+                  return _SwipeableWordCard(
+                    word: word.text,
+                    isChecked: isChecked,
+                    isGameActive: isGameActive,
+                    onToggle: () {
+                      FeedbackService().correctAnswerFeedback();
+                      setState(() {
+                        wordAnswers[index] = isChecked ? null : true;
+                      });
+                    },
+                    index: index,
+                  );
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -637,12 +653,12 @@ class _SwipeableWordCardState extends State<_SwipeableWordCard>
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 16),
+      margin: const EdgeInsets.only(bottom: 8),
       child: Stack(
         children: [
           // Fondo con indicador de deslizamiento
           Container(
-            height: 70,
+            height: 60,
             decoration: BoxDecoration(
               gradient: _dragOffset > 30 
                   ? const LinearGradient(
@@ -661,7 +677,7 @@ class _SwipeableWordCardState extends State<_SwipeableWordCard>
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Container(
-                              padding: const EdgeInsets.all(8),
+                              padding: const EdgeInsets.all(6),
                               decoration: BoxDecoration(
                                 color: Colors.white.withOpacity(0.2),
                                 borderRadius: BorderRadius.circular(12),
@@ -669,15 +685,15 @@ class _SwipeableWordCardState extends State<_SwipeableWordCard>
                               child: const Icon(
                                 Icons.check_circle,
                                 color: Colors.white,
-                                size: 28,
+                                size: 24,
                               ),
                             ),
-                            const SizedBox(height: 4),
+                            const SizedBox(height: 2),
                             Text(
                               '¡Acierto!',
                               style: TextStyle(
                                 color: Colors.white,
-                                fontSize: 12,
+                                fontSize: 10,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -698,7 +714,7 @@ class _SwipeableWordCardState extends State<_SwipeableWordCard>
                 onPanEnd: _handlePanEnd,
                 onTap: widget.isGameActive ? widget.onToggle : null,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                   decoration: BoxDecoration(
                     gradient: widget.isChecked
                         ? const LinearGradient(
@@ -730,7 +746,7 @@ class _SwipeableWordCardState extends State<_SwipeableWordCard>
                         child: Text(
                           widget.word.toUpperCase(),
                           style: TextStyle(
-                            fontSize: 22,
+                            fontSize: 20,
                             fontWeight: FontWeight.bold,
                             color: widget.isChecked 
                                 ? Colors.white 
@@ -744,8 +760,8 @@ class _SwipeableWordCardState extends State<_SwipeableWordCard>
                         alignment: Alignment.center,
                         children: [
                           Container(
-                            width: 50,
-                            height: 50,
+                            width: 45,
+                            height: 45,
                             decoration: BoxDecoration(
                               gradient: widget.isChecked 
                                   ? const LinearGradient(
@@ -770,15 +786,15 @@ class _SwipeableWordCardState extends State<_SwipeableWordCard>
                               color: widget.isChecked 
                                   ? DopamineColors.successGreen 
                                   : Colors.white,
-                              size: 28,
+                              size: 24,
                             ),
                           ),
                           // Animación de check
                           ScaleTransition(
                             scale: _checkAnimation,
                             child: Container(
-                              width: 70,
-                              height: 70,
+                              width: 65,
+                              height: 65,
                               decoration: BoxDecoration(
                                 gradient: const LinearGradient(
                                   colors: [DopamineColors.successGreen, DopamineColors.accent2],
@@ -795,7 +811,7 @@ class _SwipeableWordCardState extends State<_SwipeableWordCard>
                               child: const Icon(
                                 Icons.check_circle,
                                 color: Colors.white,
-                                size: 40,
+                                size: 35,
                               ),
                             ),
                           ),
