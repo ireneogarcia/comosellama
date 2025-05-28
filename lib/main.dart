@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'core/password/round_service.dart';
 import 'core/password/word_repository.dart';
 import 'core/game/game_controller.dart';
+import 'core/theme/dopamine_theme.dart';
 import 'ui/blocs/round_bloc.dart';
 import 'ui/screens/home_screen.dart';
 
@@ -49,27 +50,7 @@ class DeslizasApp extends StatelessWidget {
       ],
       child: MaterialApp(
         title: 'Deslizas',
-        theme: ThemeData(
-          primarySwatch: Colors.indigo,
-          brightness: Brightness.light,
-          useMaterial3: true,
-          fontFamily: 'Roboto',
-          elevatedButtonTheme: ElevatedButtonThemeData(
-            style: ElevatedButton.styleFrom(
-              elevation: 3,
-              padding: const EdgeInsets.symmetric(
-                horizontal: 24,
-                vertical: 12,
-              ),
-            ),
-          ),
-          appBarTheme: const AppBarTheme(
-            centerTitle: true,
-            elevation: 0,
-            backgroundColor: Colors.transparent,
-            foregroundColor: Colors.white,
-          ),
-        ),
+        theme: DopamineTheme.theme,
         home: const HomeScreen(),
       ),
     );

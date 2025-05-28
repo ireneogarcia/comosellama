@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import '../../core/theme/dopamine_theme.dart';
 import 'team_transition_screen.dart';
 import '../../core/models/team.dart';
 
@@ -12,8 +13,8 @@ class TeamSetupScreen extends StatefulWidget {
 
 class _TeamSetupScreenState extends State<TeamSetupScreen> {
   final List<Team> teams = [
-    Team(name: 'Equipo 1', color: Colors.red),
-    Team(name: 'Equipo 2', color: Colors.blue),
+    Team(name: 'Equipo 1', color: DopamineColors.electricBlue),
+    Team(name: 'Equipo 2', color: DopamineColors.secondaryPink),
   ];
   
   int rounds = 3;
@@ -21,29 +22,22 @@ class _TeamSetupScreenState extends State<TeamSetupScreen> {
   String selectedCategory = 'mixed';
 
   final List<CategoryOption> categories = [
-    CategoryOption(value: 'mixed', name: 'Mixta', icon: '🎲', color: Colors.grey),
-    CategoryOption(value: 'animales', name: 'Animales', icon: '🐾', color: Colors.brown),
-    CategoryOption(value: 'objetos', name: 'Objetos', icon: '🏠', color: Colors.blue),
-    CategoryOption(value: 'comida', name: 'Comida', icon: '🍎', color: Colors.red),
-    CategoryOption(value: 'profesiones', name: 'Profesiones', icon: '👨‍⚕️', color: Colors.purple),
-    CategoryOption(value: 'deportes', name: 'Deportes', icon: '⚽', color: Colors.orange),
-    CategoryOption(value: 'colores', name: 'Colores', icon: '🎨', color: Colors.green),
-    CategoryOption(value: 'emociones', name: 'Emociones', icon: '😊', color: Colors.pink),
+    CategoryOption(value: 'mixed', name: 'Mixta', icon: '🎲', gradient: const LinearGradient(colors: [DopamineColors.accent4, DopamineColors.primaryPurple])),
+    CategoryOption(value: 'animales', name: 'Animales', icon: '🐾', gradient: DopamineGradients.successGradient),
+    CategoryOption(value: 'objetos', name: 'Objetos', icon: '🏠', gradient: DopamineGradients.electricGradient),
+    CategoryOption(value: 'comida', name: 'Comida', icon: '🍎', gradient: DopamineGradients.errorGradient),
+    CategoryOption(value: 'profesiones', name: 'Profesiones', icon: '👨‍⚕️', gradient: DopamineGradients.primaryGradient),
+    CategoryOption(value: 'deportes', name: 'Deportes', icon: '⚽', gradient: DopamineGradients.warningGradient),
+    CategoryOption(value: 'colores', name: 'Colores', icon: '🎨', gradient: const LinearGradient(colors: [DopamineColors.accent2, DopamineColors.successGreen])),
+    CategoryOption(value: 'emociones', name: 'Emociones', icon: '😊', gradient: const LinearGradient(colors: [DopamineColors.secondaryPink, DopamineColors.accent1])),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Theme.of(context).primaryColor.withOpacity(0.1),
-              Colors.white,
-            ],
-          ),
+        decoration: const BoxDecoration(
+          gradient: DopamineGradients.backgroundGradient,
         ),
         child: SafeArea(
           child: Column(
@@ -77,20 +71,33 @@ class _TeamSetupScreenState extends State<TeamSetupScreen> {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Theme.of(context).primaryColor,
-        borderRadius: const BorderRadius.only(
+      decoration: const BoxDecoration(
+        gradient: DopamineGradients.primaryGradient,
+        borderRadius: BorderRadius.only(
           bottomLeft: Radius.circular(30),
           bottomRight: Radius.circular(30),
         ),
+        boxShadow: [
+          BoxShadow(
+            color: DopamineColors.primaryPurple,
+            blurRadius: 20,
+            offset: Offset(0, 10),
+          ),
+        ],
       ),
       child: Column(
         children: [
           Row(
             children: [
-              IconButton(
-                onPressed: () => Navigator.pop(context),
-                icon: const Icon(Icons.arrow_back, color: Colors.white),
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: IconButton(
+                  onPressed: () => Navigator.pop(context),
+                  icon: const Icon(Icons.arrow_back, color: Colors.white),
+                ),
               ),
               const Expanded(
                 child: Text(
@@ -103,16 +110,24 @@ class _TeamSetupScreenState extends State<TeamSetupScreen> {
                   ),
                 ),
               ),
-              const SizedBox(width: 48), // Para balancear el botón de atrás
+              const SizedBox(width: 56), // Para balancear el botón de atrás
             ],
           ),
-          const SizedBox(height: 10),
-          Text(
-            'Personaliza tu juego y ¡que comience la diversión!',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.white.withOpacity(0.9),
+          const SizedBox(height: 15),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.2),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: const Text(
+              '⚡ Personaliza tu juego y ¡que comience la diversión! ⚡',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
         ],
@@ -126,28 +141,64 @@ class _TeamSetupScreenState extends State<TeamSetupScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            const Icon(Icons.groups, color: Colors.blue, size: 28),
-            const SizedBox(width: 12),
-            const Text(
-              'Equipos',
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: Colors.blue,
+        Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            gradient: DopamineGradients.electricGradient,
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                color: DopamineColors.electricBlue.withOpacity(0.3),
+                blurRadius: 15,
+                offset: const Offset(0, 8),
               ),
-            ),
-            const Spacer(),
-            if (teams.length < 6)
-              FloatingActionButton.small(
-                onPressed: _addTeam,
-                backgroundColor: Colors.blue,
-                child: const Icon(Icons.add, color: Colors.white),
+            ],
+          ),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: const Icon(Icons.groups, color: Colors.white, size: 28),
               ),
-          ],
+              const SizedBox(width: 16),
+              const Expanded(
+                child: Text(
+                  'Equipos',
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              if (teams.length < 6)
+                Container(
+                  decoration: BoxDecoration(
+                    gradient: DopamineGradients.successGradient,
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: DopamineColors.successGreen.withOpacity(0.4),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: FloatingActionButton.small(
+                    onPressed: _addTeam,
+                    backgroundColor: Colors.transparent,
+                    elevation: 0,
+                    child: const Icon(Icons.add, color: Colors.white, size: 24),
+                  ),
+                ),
+            ],
+          ),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 20),
         ...teams.asMap().entries.map((entry) {
           final index = entry.key;
           final team = entry.value;
@@ -161,56 +212,91 @@ class _TeamSetupScreenState extends State<TeamSetupScreen> {
 
   Widget _buildTeamCard(Team team, int index) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: team.color.withOpacity(0.3),
+          width: 2,
+        ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
+            color: team.color.withOpacity(0.2),
+            blurRadius: 15,
+            offset: const Offset(0, 8),
           ),
         ],
       ),
       child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-        leading: CircleAvatar(
-          backgroundColor: team.color,
-          radius: 25,
-          child: Text(
-            '${index + 1}',
-            style: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 18,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+        leading: Container(
+          width: 60,
+          height: 60,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [team.color, team.color.withOpacity(0.7)],
+            ),
+            borderRadius: BorderRadius.circular(18),
+            boxShadow: [
+              BoxShadow(
+                color: team.color.withOpacity(0.4),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Center(
+            child: Text(
+              '${index + 1}',
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+              ),
             ),
           ),
         ),
         title: Text(
           team.name,
-          style: const TextStyle(
+          style: TextStyle(
             fontWeight: FontWeight.bold,
-            fontSize: 16,
+            fontSize: 18,
+            color: team.color,
           ),
         ),
-        subtitle: Text(
-          'Toca para editar',
-          style: TextStyle(
-            color: Colors.grey.shade600,
-            fontSize: 12,
+        subtitle: Container(
+          margin: const EdgeInsets.only(top: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          decoration: BoxDecoration(
+            color: team.color.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Text(
+            '✨ Toca para personalizar',
+            style: TextStyle(
+              color: team.color,
+              fontWeight: FontWeight.w600,
+              fontSize: 12,
+            ),
           ),
         ),
         trailing: teams.length > 2
-            ? IconButton(
-                icon: Icon(Icons.delete_outline, color: Colors.red.shade400),
-                onPressed: () => _removeTeam(index),
+            ? Container(
+                decoration: BoxDecoration(
+                  gradient: DopamineGradients.errorGradient,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: IconButton(
+                  onPressed: () => _removeTeam(index),
+                  icon: const Icon(Icons.delete, color: Colors.white, size: 20),
+                ),
               )
             : null,
         onTap: () => _editTeam(index),
       ),
-    ).animate(delay: Duration(milliseconds: 100 * index))
-      .fadeIn(duration: const Duration(milliseconds: 500))
+    ).animate(delay: Duration(milliseconds: 200 + (index * 100)))
+      .fadeIn()
       .slideX(begin: 0.3);
   }
 
@@ -382,15 +468,16 @@ class _TeamSetupScreenState extends State<TeamSetupScreen> {
               },
               child: Container(
                 decoration: BoxDecoration(
-                  color: isSelected ? category.color : Colors.white,
+                  gradient: isSelected ? category.gradient : null,
+                  color: isSelected ? null : Colors.white,
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
-                    color: isSelected ? category.color : Colors.grey.shade300,
+                    color: isSelected ? category.gradient.colors.first : Colors.grey.shade300,
                     width: 2,
                   ),
                   boxShadow: isSelected ? [
                     BoxShadow(
-                      color: category.color.withOpacity(0.3),
+                      color: category.gradient.colors.first.withOpacity(0.3),
                       blurRadius: 8,
                       offset: const Offset(0, 2),
                     ),
@@ -512,12 +599,12 @@ class _TeamSetupScreenState extends State<TeamSetupScreen> {
 
   Color _getNextColor() {
     const colors = [
-      Colors.red,
-      Colors.blue,
-      Colors.green,
-      Colors.orange,
-      Colors.purple,
-      Colors.teal,
+      DopamineColors.electricBlue,
+      DopamineColors.secondaryPink,
+      DopamineColors.successGreen,
+      DopamineColors.warningOrange,
+      DopamineColors.primaryPurple,
+      DopamineColors.accent2,
     ];
     return colors[teams.length % colors.length];
   }
@@ -556,13 +643,13 @@ class CategoryOption {
   final String value;
   final String name;
   final String icon;
-  final Color color;
+  final LinearGradient gradient;
 
   CategoryOption({
     required this.value,
     required this.name,
     required this.icon,
-    required this.color,
+    required this.gradient,
   });
 }
 

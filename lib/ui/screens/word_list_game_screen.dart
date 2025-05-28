@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import '../../core/theme/dopamine_theme.dart';
 import '../blocs/round_bloc.dart';
 import 'team_transition_screen.dart';
 import 'team_results_screen.dart';
@@ -176,115 +177,189 @@ class _WordListGameScreenState extends State<WordListGameScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: Consumer<RoundBloc>(
-          builder: (context, roundBloc, child) {
-            final state = roundBloc.state;
-            
-            if (state.status == RoundStatus.loading || state.round == null) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            
-            return _buildGameView(state.round!.words);
-          },
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              DopamineColors.backgroundDark,
+              Color(0xFF374151),
+              DopamineColors.primaryPurple,
+            ],
+            stops: [0.0, 0.7, 1.0],
+          ),
+        ),
+        child: SafeArea(
+          child: Consumer<RoundBloc>(
+            builder: (context, roundBloc, child) {
+              final state = roundBloc.state;
+              
+              if (state.status == RoundStatus.loading || state.round == null) {
+                return Center(
+                  child: Container(
+                    padding: const EdgeInsets.all(30),
+                    decoration: BoxDecoration(
+                      color: DopamineColors.cardWhite,
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: DopamineColors.primaryPurple.withOpacity(0.3),
+                          blurRadius: 20,
+                          offset: const Offset(0, 10),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          width: 60,
+                          height: 60,
+                          decoration: BoxDecoration(
+                            gradient: const LinearGradient(
+                              colors: [DopamineColors.primaryPurple, DopamineColors.secondaryPink],
+                            ),
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          child: const CircularProgressIndicator(
+                            color: Colors.white,
+                            strokeWidth: 3,
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        Text(
+                          'Preparando palabras...',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: DopamineColors.textDark,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }
+              
+              return _buildGameView(state.round!.words);
+            },
+          ),
         ),
       ),
     );
   }
 
   Widget _buildGameView(List<dynamic> words) {
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            widget.team?.color.withOpacity(0.1) ?? Theme.of(context).primaryColor.withOpacity(0.1),
-            Colors.white,
-          ],
+    return Column(
+      children: [
+        if (widget.team != null) _buildTeamHeader(),
+        _buildTimer(),
+        const SizedBox(height: 15),
+        _buildScore(),
+        const SizedBox(height: 20),
+        Expanded(
+          child: _buildWordsList(words),
         ),
-      ),
-      child: Column(
-        children: [
-          if (widget.team != null) _buildTeamHeader(),
-          _buildTimer(),
-          const SizedBox(height: 20),
-          _buildScore(),
-          const SizedBox(height: 20),
-          Expanded(
-            child: _buildWordsList(words),
-          ),
-          _buildFinishButton(),
-          const SizedBox(height: 20),
-        ],
-      ),
+        _buildFinishButton(),
+        const SizedBox(height: 20),
+      ],
     );
   }
 
   Widget _buildTeamHeader() {
     return Container(
       width: double.infinity,
+      margin: const EdgeInsets.all(20),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: widget.team!.color,
-        borderRadius: const BorderRadius.only(
-          bottomLeft: Radius.circular(20),
-          bottomRight: Radius.circular(20),
+        gradient: LinearGradient(
+          colors: [
+            widget.team!.color,
+            widget.team!.color.withOpacity(0.8),
+          ],
         ),
+        borderRadius: BorderRadius.circular(25),
+        boxShadow: [
+          BoxShadow(
+            color: widget.team!.color.withOpacity(0.4),
+            blurRadius: 15,
+            offset: const Offset(0, 8),
+          ),
+        ],
       ),
-      child: SafeArea(
-        bottom: false,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CircleAvatar(
-              backgroundColor: Colors.white,
-              radius: 25,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            width: 50,
+            height: 50,
+            decoration: BoxDecoration(
+              color: DopamineColors.cardWhite,
+              borderRadius: BorderRadius.circular(25),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Center(
               child: Text(
                 widget.team!.name[0],
                 style: TextStyle(
                   color: widget.team!.color,
                   fontWeight: FontWeight.bold,
-                  fontSize: 20,
+                  fontSize: 24,
                 ),
               ),
             ),
-            const SizedBox(width: 16),
-            Text(
-              widget.team!.name,
-              style: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
+          ),
+          const SizedBox(width: 16),
+          Text(
+            widget.team!.name,
+            style: const TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
-    );
+    ).animate()
+      .fadeIn(duration: const Duration(milliseconds: 600))
+      .slideY(begin: -0.3);
   }
 
   Widget _buildTimer() {
     final isLowTime = timeRemaining <= 10;
     return Container(
-      margin: const EdgeInsets.all(20),
-      padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+      margin: const EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
       decoration: BoxDecoration(
-        color: isLowTime ? Colors.red.withOpacity(0.1) : Colors.blue.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: isLowTime ? Colors.red : Colors.blue,
-          width: 2,
+        gradient: LinearGradient(
+          colors: isLowTime 
+              ? [DopamineColors.errorRed, DopamineColors.accent1]
+              : [DopamineColors.electricBlue, DopamineColors.accent2],
         ),
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: (isLowTime ? DopamineColors.errorRed : DopamineColors.electricBlue).withOpacity(0.4),
+            blurRadius: 15,
+            offset: const Offset(0, 8),
+          ),
+        ],
       ),
       child: Column(
         children: [
           Text(
             timeRemaining.toString(),
-            style: TextStyle(
-              fontSize: 56,
+            style: const TextStyle(
+              fontSize: 48,
               fontWeight: FontWeight.bold,
-              color: isLowTime ? Colors.red : Colors.blue,
+              color: Colors.white,
             ),
           ).animate(
             target: isLowTime ? 1 : 0,
@@ -292,8 +367,9 @@ class _WordListGameScreenState extends State<WordListGameScreen> {
           Text(
             'segundos restantes',
             style: TextStyle(
-              fontSize: 16,
-              color: isLowTime ? Colors.red : Colors.blue,
+              fontSize: 14,
+              color: Colors.white.withOpacity(0.9),
+              fontWeight: FontWeight.w600,
             ),
           ),
         ],
@@ -304,19 +380,39 @@ class _WordListGameScreenState extends State<WordListGameScreen> {
   Widget _buildScore() {
     final score = wordAnswers.values.where((answer) => answer == true).length;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      margin: const EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
       decoration: BoxDecoration(
-        color: Colors.green.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(15),
-        border: Border.all(color: Colors.green, width: 1),
-      ),
-      child: Text(
-        'Puntuación: $score',
-        style: const TextStyle(
-          fontSize: 20,
-          fontWeight: FontWeight.bold,
-          color: Colors.green,
+        gradient: const LinearGradient(
+          colors: [DopamineColors.successGreen, DopamineColors.accent2],
         ),
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: DopamineColors.successGreen.withOpacity(0.4),
+            blurRadius: 15,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(
+            Icons.star,
+            color: Colors.white,
+            size: 24,
+          ),
+          const SizedBox(width: 8),
+          Text(
+            'Puntuación: $score',
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -326,12 +422,33 @@ class _WordListGameScreenState extends State<WordListGameScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         children: [
-          const Text(
-            'Marca las palabras que aciertes:',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.black87,
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
+                colors: [DopamineColors.secondaryPink, DopamineColors.primaryPurple],
+              ),
+              borderRadius: BorderRadius.circular(15),
+            ),
+            child: Row(
+              children: [
+                const Icon(
+                  Icons.touch_app,
+                  color: Colors.white,
+                  size: 24,
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    'Desliza → o toca para marcar aciertos',
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
           const SizedBox(height: 20),
@@ -365,24 +482,49 @@ class _WordListGameScreenState extends State<WordListGameScreen> {
   Widget _buildFinishButton() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: SizedBox(
+      child: Container(
         width: double.infinity,
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [DopamineColors.warningOrange, DopamineColors.accent3],
+          ),
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: DopamineColors.warningOrange.withOpacity(0.4),
+              blurRadius: 15,
+              offset: const Offset(0, 8),
+            ),
+          ],
+        ),
         child: ElevatedButton(
           onPressed: isGameActive ? _finishGame : null,
           style: ElevatedButton.styleFrom(
-            backgroundColor: widget.team?.color ?? Theme.of(context).primaryColor,
-            foregroundColor: Colors.white,
-            padding: const EdgeInsets.symmetric(vertical: 16),
+            backgroundColor: Colors.transparent,
+            shadowColor: Colors.transparent,
+            padding: const EdgeInsets.symmetric(vertical: 18),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15),
+              borderRadius: BorderRadius.circular(20),
             ),
           ),
-          child: const Text(
-            'FINALIZAR RONDA',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(
+                Icons.flag,
+                color: Colors.white,
+                size: 24,
+              ),
+              const SizedBox(width: 12),
+              const Text(
+                'FINALIZAR RONDA',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -495,26 +637,51 @@ class _SwipeableWordCardState extends State<_SwipeableWordCard>
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: const EdgeInsets.only(bottom: 16),
       child: Stack(
         children: [
           // Fondo con indicador de deslizamiento
           Container(
-            height: 60,
+            height: 70,
             decoration: BoxDecoration(
-              color: _dragOffset > 30 ? Colors.green.withOpacity(0.3) : Colors.transparent,
-              borderRadius: BorderRadius.circular(12),
+              gradient: _dragOffset > 30 
+                  ? const LinearGradient(
+                      colors: [DopamineColors.successGreen, DopamineColors.accent2],
+                    )
+                  : null,
+              borderRadius: BorderRadius.circular(20),
             ),
             child: _dragOffset > 30
                 ? Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       Padding(
-                        padding: const EdgeInsets.only(right: 20),
-                        child: Icon(
-                          Icons.check_circle,
-                          color: Colors.green,
-                          size: 30,
+                        padding: const EdgeInsets.only(right: 25),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.2),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: const Icon(
+                                Icons.check_circle,
+                                color: Colors.white,
+                                size: 28,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              '¡Acierto!',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],
@@ -531,21 +698,29 @@ class _SwipeableWordCardState extends State<_SwipeableWordCard>
                 onPanEnd: _handlePanEnd,
                 onTap: widget.isGameActive ? widget.onToggle : null,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                   decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(12),
+                    gradient: widget.isChecked
+                        ? const LinearGradient(
+                            colors: [DopamineColors.successGreen, DopamineColors.accent2],
+                          )
+                        : const LinearGradient(
+                            colors: [DopamineColors.cardWhite, Color(0xFFF8FAFC)],
+                          ),
+                    borderRadius: BorderRadius.circular(20),
                     border: Border.all(
                       color: widget.isChecked 
-                          ? Colors.green 
-                          : Colors.grey.shade300,
+                          ? DopamineColors.successGreen
+                          : DopamineColors.electricBlue.withOpacity(0.3),
                       width: 2,
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
-                        blurRadius: 3,
-                        offset: const Offset(0, 1),
+                        color: widget.isChecked 
+                            ? DopamineColors.successGreen.withOpacity(0.3)
+                            : DopamineColors.electricBlue.withOpacity(0.1),
+                        blurRadius: 15,
+                        offset: const Offset(0, 8),
                       ),
                     ],
                   ),
@@ -554,48 +729,73 @@ class _SwipeableWordCardState extends State<_SwipeableWordCard>
                       Expanded(
                         child: Text(
                           widget.word.toUpperCase(),
-                          style: const TextStyle(
-                            fontSize: 20,
+                          style: TextStyle(
+                            fontSize: 22,
                             fontWeight: FontWeight.bold,
-                            color: Colors.black87,
+                            color: widget.isChecked 
+                                ? Colors.white 
+                                : DopamineColors.textDark,
+                            letterSpacing: 1.2,
                           ),
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: 16),
                       Stack(
                         alignment: Alignment.center,
                         children: [
                           Container(
-                            width: 40,
-                            height: 40,
+                            width: 50,
+                            height: 50,
                             decoration: BoxDecoration(
-                              color: widget.isChecked ? Colors.green : Colors.grey.shade200,
-                              borderRadius: BorderRadius.circular(8),
-                              border: Border.all(
-                                color: widget.isChecked ? Colors.green : Colors.grey.shade400,
-                                width: 2,
-                              ),
+                              gradient: widget.isChecked 
+                                  ? const LinearGradient(
+                                      colors: [Colors.white, Color(0xFFF0F9FF)],
+                                    )
+                                  : const LinearGradient(
+                                      colors: [DopamineColors.electricBlue, DopamineColors.primaryPurple],
+                                    ),
+                              borderRadius: BorderRadius.circular(15),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: widget.isChecked 
+                                      ? Colors.white.withOpacity(0.5)
+                                      : DopamineColors.electricBlue.withOpacity(0.3),
+                                  blurRadius: 10,
+                                  offset: const Offset(0, 4),
+                                ),
+                              ],
                             ),
                             child: Icon(
-                              Icons.check,
-                              color: widget.isChecked ? Colors.white : Colors.grey.shade600,
-                              size: 24,
+                              widget.isChecked ? Icons.check_circle : Icons.add_circle_outline,
+                              color: widget.isChecked 
+                                  ? DopamineColors.successGreen 
+                                  : Colors.white,
+                              size: 28,
                             ),
                           ),
                           // Animación de check
                           ScaleTransition(
                             scale: _checkAnimation,
                             child: Container(
-                              width: 50,
-                              height: 50,
+                              width: 70,
+                              height: 70,
                               decoration: BoxDecoration(
-                                color: Colors.green.withOpacity(0.8),
+                                gradient: const LinearGradient(
+                                  colors: [DopamineColors.successGreen, DopamineColors.accent2],
+                                ),
                                 shape: BoxShape.circle,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: DopamineColors.successGreen.withOpacity(0.5),
+                                    blurRadius: 20,
+                                    offset: const Offset(0, 8),
+                                  ),
+                                ],
                               ),
                               child: const Icon(
-                                Icons.check,
+                                Icons.check_circle,
                                 color: Colors.white,
-                                size: 30,
+                                size: 40,
                               ),
                             ),
                           ),
@@ -610,7 +810,8 @@ class _SwipeableWordCardState extends State<_SwipeableWordCard>
         ],
       ),
     ).animate()
-      .fadeIn(delay: Duration(milliseconds: widget.index * 100))
-      .slideX(begin: 0.3);
+      .fadeIn(delay: Duration(milliseconds: widget.index * 150))
+      .slideX(begin: 0.5)
+      .scale(begin: const Offset(0.8, 0.8));
   }
 } 

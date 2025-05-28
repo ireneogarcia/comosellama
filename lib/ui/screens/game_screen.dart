@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../blocs/round_bloc.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import '../../core/theme/dopamine_theme.dart';
+import '../blocs/round_bloc.dart';
 import 'team_transition_screen.dart';
 import 'team_results_screen.dart';
 import 'word_list_game_screen.dart';
@@ -70,55 +71,120 @@ class _GameScreenState extends State<GameScreen> {
   Widget build(BuildContext context) {
     // Si es modalidad de lista de palabras, mostrar loading mientras se redirige
     if (widget.gameMode == GameMode.wordList) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
+      return Scaffold(
+        body: Container(
+          decoration: const BoxDecoration(
+            gradient: DopamineGradients.backgroundGradient,
+          ),
+          child: Center(
+            child: Container(
+              padding: const EdgeInsets.all(20),
+              margin: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                gradient: DopamineGradients.primaryGradient,
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: DopamineColors.primaryPurple.withOpacity(0.3),
+                    blurRadius: 15,
+                    offset: const Offset(0, 8),
+                  ),
+                ],
+              ),
+              child: const CircularProgressIndicator(color: Colors.white),
+            ),
+          ),
+        ),
       );
     }
     
     return Scaffold(
-      body: SafeArea(
-        child: Consumer<RoundBloc>(
-          builder: (context, roundBloc, child) {
-            final state = roundBloc.state;
-            
-            switch (state.status) {
-              case RoundStatus.initial:
-                _startRound(roundBloc);
-                return const Center(child: CircularProgressIndicator());
-                
-              case RoundStatus.loading:
-                return const Center(child: CircularProgressIndicator());
-                
-              case RoundStatus.playing:
-                return _GameView(
-                  word: state.round!.currentWord.text,
-                  timeRemaining: state.round!.remainingTime,
-                  score: state.round!.score,
-                  totalWords: state.round!.words.length,
-                  currentWordIndex: state.round!.currentWordIndex,
-                  onSwipe: (right) => _handleSwipe(roundBloc, right),
-                  team: widget.team,
-                  primaryColor: Theme.of(context).primaryColor,
-                );
-                
-              case RoundStatus.paused:
-                return _PausedView(
-                  onResume: () => roundBloc.resumeRound(),
-                  team: widget.team,
-                );
-                
-              case RoundStatus.finished:
-                return _handleGameFinished(context, roundBloc);
-                
-              case RoundStatus.error:
-                return Center(
-                  child: Text('Error: ${state.errorMessage}'),
-                );
-            }
-          },
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: DopamineGradients.backgroundGradient,
+        ),
+        child: SafeArea(
+          child: Consumer<RoundBloc>(
+            builder: (context, roundBloc, child) {
+              final state = roundBloc.state;
+              
+              switch (state.status) {
+                case RoundStatus.initial:
+                  _startRound(roundBloc);
+                  return _buildLoadingView();
+                  
+                case RoundStatus.loading:
+                  return _buildLoadingView();
+                  
+                case RoundStatus.playing:
+                  return _GameView(
+                    word: state.round!.currentWord.text,
+                    timeRemaining: state.round!.remainingTime,
+                    score: state.round!.score,
+                    totalWords: state.round!.words.length,
+                    currentWordIndex: state.round!.currentWordIndex,
+                    onSwipe: (right) => _handleSwipe(roundBloc, right),
+                    team: widget.team,
+                  );
+                  
+                case RoundStatus.paused:
+                  return _PausedView(
+                    onResume: () => roundBloc.resumeRound(),
+                    team: widget.team,
+                  );
+                  
+                case RoundStatus.finished:
+                  return _handleGameFinished(context, roundBloc);
+                  
+                case RoundStatus.error:
+                  return Center(
+                    child: Container(
+                      padding: const EdgeInsets.all(20),
+                      margin: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        gradient: DopamineGradients.errorGradient,
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            color: DopamineColors.errorRed.withOpacity(0.3),
+                            blurRadius: 15,
+                            offset: const Offset(0, 8),
+                          ),
+                        ],
+                      ),
+                      child: Text(
+                        'Error: ${state.errorMessage}',
+                        style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  );
+              }
+            },
+          ),
         ),
       ),
       floatingActionButton: _buildFAB(context),
+    );
+  }
+
+  Widget _buildLoadingView() {
+    return Center(
+      child: Container(
+        padding: const EdgeInsets.all(20),
+        margin: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          gradient: DopamineGradients.primaryGradient,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: DopamineColors.primaryPurple.withOpacity(0.3),
+              blurRadius: 15,
+              offset: const Offset(0, 8),
+            ),
+          ],
+        ),
+        child: const CircularProgressIndicator(color: Colors.white),
+      ),
     );
   }
 
@@ -126,12 +192,27 @@ class _GameScreenState extends State<GameScreen> {
     return Consumer<RoundBloc>(
       builder: (context, roundBloc, child) {
         if (roundBloc.state.status == RoundStatus.playing) {
-          return FloatingActionButton(
-            onPressed: () {
-              FeedbackService().buttonTapFeedback();
-              roundBloc.pauseRound();
-            },
-            child: const Icon(Icons.pause),
+          return Container(
+            decoration: BoxDecoration(
+              gradient: DopamineGradients.warningGradient,
+              borderRadius: BorderRadius.circular(30),
+              boxShadow: [
+                BoxShadow(
+                  color: DopamineColors.warningOrange.withOpacity(0.4),
+                  blurRadius: 15,
+                  offset: const Offset(0, 8),
+                ),
+              ],
+            ),
+            child: FloatingActionButton(
+              onPressed: () {
+                FeedbackService().buttonTapFeedback();
+                roundBloc.pauseRound();
+              },
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              child: const Icon(Icons.pause, color: Colors.white, size: 28),
+            ),
           );
         }
         return const SizedBox.shrink();
@@ -160,17 +241,45 @@ class _GameScreenState extends State<GameScreen> {
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
           colors: [
-            widget.team?.color ?? Theme.of(context).primaryColor,
-            (widget.team?.color ?? Theme.of(context).primaryColor).withOpacity(0.7),
+            DopamineColors.backgroundDark,
+            widget.team?.color ?? DopamineColors.primaryPurple,
+            (widget.team?.color ?? DopamineColors.primaryPurple).withOpacity(0.8),
           ],
         ),
       ),
-      child: const Center(
-        child: CircularProgressIndicator(
-          color: Colors.white,
+      child: Center(
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          margin: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            gradient: DopamineGradients.primaryGradient,
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                color: DopamineColors.primaryPurple.withOpacity(0.3),
+                blurRadius: 15,
+                offset: const Offset(0, 8),
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const CircularProgressIndicator(color: Colors.white),
+              const SizedBox(height: 16),
+              const Text(
+                '¡Ronda completada!',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -263,7 +372,6 @@ class _GameView extends StatelessWidget {
   final int currentWordIndex;
   final Function(bool) onSwipe;
   final Team? team;
-  final Color primaryColor;
 
   const _GameView({
     required this.word,
@@ -273,7 +381,6 @@ class _GameView extends StatelessWidget {
     required this.currentWordIndex,
     required this.onSwipe,
     this.team,
-    required this.primaryColor,
   });
 
   @override
@@ -284,7 +391,7 @@ class _GameView extends StatelessWidget {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            team?.color.withOpacity(0.1) ?? primaryColor.withOpacity(0.1),
+            team?.color.withOpacity(0.1) ?? DopamineColors.primaryPurple.withOpacity(0.1),
             Colors.white,
           ],
         ),
@@ -470,7 +577,7 @@ class _GameView extends StatelessWidget {
             minHeight: 8,
             backgroundColor: Colors.grey.withOpacity(0.3),
             valueColor: AlwaysStoppedAnimation<Color>(
-              team?.color ?? primaryColor,
+              team?.color ?? DopamineColors.primaryPurple,
             ),
           ),
           const SizedBox(height: 10),
@@ -618,8 +725,8 @@ class _PausedView extends StatelessWidget {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            team?.color ?? Theme.of(context).primaryColor,
-            (team?.color ?? Theme.of(context).primaryColor).withOpacity(0.7),
+            team?.color ?? DopamineColors.primaryPurple,
+            (team?.color ?? DopamineColors.primaryPurple).withOpacity(0.7),
           ],
         ),
       ),
@@ -704,7 +811,7 @@ class _PausedView extends StatelessWidget {
                     ),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
-                      foregroundColor: team?.color ?? Theme.of(context).primaryColor,
+                      foregroundColor: team?.color ?? DopamineColors.primaryPurple,
                       padding: const EdgeInsets.symmetric(
                         horizontal: 32,
                         vertical: 12,
@@ -742,8 +849,8 @@ class _FinishedView extends StatelessWidget {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            Theme.of(context).primaryColor,
-            Theme.of(context).primaryColor.withOpacity(0.7),
+            DopamineColors.primaryPurple,
+            DopamineColors.primaryPurple.withOpacity(0.7),
           ],
         ),
       ),
@@ -820,7 +927,7 @@ class _FinishedView extends StatelessWidget {
                 ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.white,
-                  foregroundColor: Theme.of(context).primaryColor,
+                  foregroundColor: DopamineColors.primaryPurple,
                   padding: const EdgeInsets.symmetric(
                     horizontal: 32,
                     vertical: 16,
