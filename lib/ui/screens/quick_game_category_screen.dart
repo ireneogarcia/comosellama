@@ -2,15 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'team_transition_screen.dart';
 import '../../core/models/team.dart';
+import '../../core/models/game_mode.dart';
 
 class QuickGameCategoryScreen extends StatelessWidget {
-  const QuickGameCategoryScreen({super.key});
+  final GameMode gameMode;
+  
+  const QuickGameCategoryScreen({
+    super.key,
+    this.gameMode = GameMode.oneByOne,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Juego Rápido - Elige Categoría'),
+        title: Text('${gameMode.name} - Elige Categoría'),
         backgroundColor: Theme.of(context).primaryColor,
         foregroundColor: Colors.white,
       ),
@@ -39,15 +45,18 @@ class QuickGameCategoryScreen extends StatelessWidget {
                 ),
                 child: Row(
                   children: [
-                    const Icon(Icons.info_outline, color: Colors.blue),
+                    Text(
+                      gameMode.icon,
+                      style: const TextStyle(fontSize: 24),
+                    ),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
-                            'Configuración del Juego Rápido:',
-                            style: TextStyle(
+                          Text(
+                            'Modalidad: ${gameMode.name}',
+                            style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               color: Colors.blue,
                             ),
@@ -68,6 +77,7 @@ class QuickGameCategoryScreen extends StatelessWidget {
               ).animate()
                 .fadeIn(duration: const Duration(milliseconds: 500))
                 .slideY(begin: -0.2),
+              
               Expanded(
                 child: GridView.count(
                   crossAxisCount: 2,
@@ -79,48 +89,56 @@ class QuickGameCategoryScreen extends StatelessWidget {
                       name: 'Animales',
                       category: 'animales',
                       color: Colors.brown,
+                      gameMode: gameMode,
                     ),
                     _CategoryCard(
                       icon: '🏠',
                       name: 'Objetos',
                       category: 'objetos',
                       color: Colors.blue,
+                      gameMode: gameMode,
                     ),
                     _CategoryCard(
                       icon: '🍎',
                       name: 'Comida',
                       category: 'comida',
                       color: Colors.red,
+                      gameMode: gameMode,
                     ),
                     _CategoryCard(
                       icon: '👨‍⚕️',
                       name: 'Profesiones',
                       category: 'profesiones',
                       color: Colors.purple,
+                      gameMode: gameMode,
                     ),
                     _CategoryCard(
                       icon: '⚽',
                       name: 'Deportes',
                       category: 'deportes',
                       color: Colors.orange,
+                      gameMode: gameMode,
                     ),
                     _CategoryCard(
                       icon: '🎨',
                       name: 'Colores',
                       category: 'colores',
                       color: Colors.green,
+                      gameMode: gameMode,
                     ),
                     _CategoryCard(
                       icon: '😊',
                       name: 'Emociones',
                       category: 'emociones',
                       color: Colors.pink,
+                      gameMode: gameMode,
                     ),
                     _CategoryCard(
                       icon: '🎲',
                       name: 'Mixta',
                       category: 'mixed',
                       color: Colors.grey,
+                      gameMode: gameMode,
                     ),
                   ],
                 ),
@@ -138,12 +156,14 @@ class _CategoryCard extends StatelessWidget {
   final String name;
   final String category;
   final Color color;
+  final GameMode gameMode;
 
   const _CategoryCard({
     required this.icon,
     required this.name,
     required this.category,
     required this.color,
+    required this.gameMode,
   });
 
   @override
@@ -219,6 +239,7 @@ class _CategoryCard extends StatelessWidget {
           timeLimit: 60,
           category: category,
           allTeams: teams,
+          gameMode: gameMode,
         ),
       ),
     );

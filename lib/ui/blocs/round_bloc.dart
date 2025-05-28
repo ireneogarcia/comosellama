@@ -171,6 +171,22 @@ class RoundBloc extends ChangeNotifier {
     return _gameController.finishCurrentRound();
   }
 
+  void finishRoundWithScore(int score) {
+    _timer?.cancel();
+    FeedbackService().roundEndFeedback();
+    
+    // Actualizar la puntuación de la ronda actual
+    if (_state.round != null) {
+      _state.round!.score = score;
+    }
+    
+    _state = _state.copyWith(
+      status: RoundStatus.finished,
+      isTimerActive: false,
+    );
+    notifyListeners();
+  }
+
   void resetState() {
     _timer?.cancel();
     _hasWarned = false;

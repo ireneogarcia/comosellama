@@ -4,7 +4,9 @@ import '../blocs/round_bloc.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'team_transition_screen.dart';
 import 'team_results_screen.dart';
+import 'word_list_game_screen.dart';
 import '../../core/models/team.dart';
+import '../../core/models/game_mode.dart';
 import '../../core/services/feedback_service.dart';
 
 class GameScreen extends StatefulWidget {
@@ -14,6 +16,7 @@ class GameScreen extends StatefulWidget {
   final int? totalRounds;
   final List<Team>? allTeams;
   final int timeLimit;
+  final GameMode gameMode;
   
   const GameScreen({
     super.key,
@@ -23,6 +26,7 @@ class GameScreen extends StatefulWidget {
     this.totalRounds,
     this.allTeams,
     this.timeLimit = 60,
+    this.gameMode = GameMode.oneByOne,
   });
 
   @override
@@ -33,6 +37,28 @@ class _GameScreenState extends State<GameScreen> {
   @override
   void initState() {
     super.initState();
+    
+    // Si es modalidad de lista de palabras, redirigir a la pantalla correspondiente
+    if (widget.gameMode == GameMode.wordList) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => WordListGameScreen(
+              category: widget.category,
+              team: widget.team,
+              currentRound: widget.currentRound,
+              totalRounds: widget.totalRounds,
+              allTeams: widget.allTeams,
+              timeLimit: widget.timeLimit,
+              gameMode: widget.gameMode,
+            ),
+          ),
+        );
+      });
+      return;
+    }
+    
     // Resetear el estado del RoundBloc cuando se crea una nueva instancia
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final roundBloc = Provider.of<RoundBloc>(context, listen: false);
@@ -42,6 +68,13 @@ class _GameScreenState extends State<GameScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Si es modalidad de lista de palabras, mostrar loading mientras se redirige
+    if (widget.gameMode == GameMode.wordList) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+    
     return Scaffold(
       body: SafeArea(
         child: Consumer<RoundBloc>(
@@ -146,7 +179,10 @@ class _GameScreenState extends State<GameScreen> {
   void _navigateAfterRound(BuildContext context, RoundBloc roundBloc) {
     if (widget.team != null && widget.allTeams != null) {
       // Modo por equipos
-      widget.team!.score += roundBloc.state.round!.score;
+      final roundScore = roundBloc.state.round?.score ?? 0;
+      if (widget.team != null) {
+        widget.team!.score += roundScore;
+      }
       
       // Calcular siguiente equipo y ronda
       final currentTeamIndex = widget.allTeams!.indexOf(widget.team!);
@@ -168,6 +204,7 @@ class _GameScreenState extends State<GameScreen> {
               timeLimit: widget.timeLimit,
               category: widget.category,
               allTeams: widget.allTeams!,
+              gameMode: widget.gameMode,
             ),
           ),
         );
@@ -193,6 +230,7 @@ class _GameScreenState extends State<GameScreen> {
                       timeLimit: widget.timeLimit,
                       category: widget.category,
                       allTeams: widget.allTeams!,
+                      gameMode: widget.gameMode,
                     ),
                   ),
                 );

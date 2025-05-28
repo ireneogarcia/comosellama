@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'game_screen.dart';
 import '../../core/models/team.dart';
+import '../../core/models/game_mode.dart';
 
 class TeamTransitionScreen extends StatelessWidget {
   final Team team;
@@ -10,6 +11,7 @@ class TeamTransitionScreen extends StatelessWidget {
   final int timeLimit;
   final String category;
   final List<Team> allTeams;
+  final GameMode gameMode;
 
   const TeamTransitionScreen({
     super.key,
@@ -19,6 +21,7 @@ class TeamTransitionScreen extends StatelessWidget {
     required this.timeLimit,
     required this.category,
     required this.allTeams,
+    this.gameMode = GameMode.oneByOne,
   });
 
   @override
@@ -81,6 +84,32 @@ class TeamTransitionScreen extends StatelessWidget {
                       color: Colors.white.withOpacity(0.9),
                     ),
                   ),
+                  const SizedBox(height: 16),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          gameMode.icon,
+                          style: const TextStyle(fontSize: 20),
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          gameMode.name,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                   const SizedBox(height: 48),
                   ElevatedButton(
                     onPressed: () => _startTeamRound(context),
@@ -120,6 +149,7 @@ class TeamTransitionScreen extends StatelessWidget {
           totalRounds: totalRounds,
           timeLimit: timeLimit,
           allTeams: allTeams,
+          gameMode: gameMode,
         ),
       ),
     );
