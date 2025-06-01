@@ -37,11 +37,19 @@ class _WordListGameScreenState extends State<WordListGameScreen> {
   final Map<int, bool?> wordAnswers = {}; // null = no respondida, true = acierto, false = fallo
   int timeRemaining = 0;
   bool isGameActive = false;
+  bool _hasNavigated = false; // Bandera para evitar navegaciones múltiples
 
   @override
   void initState() {
     super.initState();
+    print('=== INICIALIZANDO WORD LIST GAME SCREEN ===');
+    print('Equipo: ${widget.team?.name ?? "Individual"}');
+    print('Ronda: ${widget.currentRound ?? 1}');
+    print('Tiempo límite: ${widget.timeLimit}');
+    
     timeRemaining = widget.timeLimit;
+    isGameActive = false; // Se activará en _startRound
+    
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final roundBloc = Provider.of<RoundBloc>(context, listen: false);
       roundBloc.resetState();
@@ -50,28 +58,51 @@ class _WordListGameScreenState extends State<WordListGameScreen> {
   }
 
   void _startRound(RoundBloc roundBloc) {
+    print('=== INICIANDO RONDA EN WORD LIST GAME SCREEN ===');
+    print('Categoría: ${widget.category}');
+    print('Ronda actual: ${widget.currentRound ?? 1}');
+    print('Tiempo límite: ${widget.timeLimit}');
+    print('Timer inicial: $timeRemaining');
+    
     Future.microtask(() {
       roundBloc.startNewRound(
         category: widget.category,
+        roundNumber: widget.currentRound ?? 1,
         timeLimit: widget.timeLimit,
       );
+      
       setState(() {
         isGameActive = true;
+        timeRemaining = widget.timeLimit; // Asegurar que el timer esté reseteado
       });
+      
+      print('Juego activado, iniciando timer...');
       _startTimer();
     });
   }
 
   void _startTimer() {
+    print('=== INICIANDO TIMER ===');
+    print('Tiempo inicial: $timeRemaining');
+    print('Juego activo: $isGameActive');
+    
     Future.doWhile(() async {
       await Future.delayed(const Duration(seconds: 1));
-      if (!mounted || !isGameActive) return false;
+      if (!mounted || !isGameActive) {
+        print('Timer detenido - mounted: $mounted, isGameActive: $isGameActive');
+        return false;
+      }
       
       setState(() {
         timeRemaining--;
       });
       
+      if (timeRemaining % 10 == 0 || timeRemaining <= 10) {
+        print('Timer: $timeRemaining segundos restantes');
+      }
+      
       if (timeRemaining <= 0) {
+        print('Tiempo agotado, finalizando juego...');
         _finishGame();
         return false;
       }
@@ -101,13 +132,18 @@ class _WordListGameScreenState extends State<WordListGameScreen> {
     // Finalizar el juego con la puntuación calculada
     roundBloc.finishRoundWithScore(score);
     
-    _navigateAfterRound();
+    _navigateAfterRound(context, roundBloc);
   }
 
-  void _navigateAfterRound() {
+  void _navigateAfterRound(BuildContext context, RoundBloc roundBloc) {
+    if (_hasNavigated) {
+      print('Navegación ya realizada, evitando duplicado');
+      return;
+    }
+    _hasNavigated = true;
+    
     if (widget.team != null && widget.allTeams != null) {
       // Modo por equipos
-      final roundBloc = Provider.of<RoundBloc>(context, listen: false);
       final roundScore = roundBloc.state.round?.score ?? 0;
       if (widget.team != null) {
         widget.team!.score += roundScore;
@@ -118,10 +154,25 @@ class _WordListGameScreenState extends State<WordListGameScreen> {
       final nextTeamIndex = (currentTeamIndex + 1) % widget.allTeams!.length;
       final nextTeam = widget.allTeams![nextTeamIndex];
       
-      // Si volvemos al primer equipo, incrementamos la ronda
+      // La ronda solo se incrementa cuando volvemos al primer equipo (todos han jugado)
       final nextRound = nextTeamIndex == 0 ? widget.currentRound! + 1 : widget.currentRound!;
 
-      if (nextRound <= widget.totalRounds!) {
+      print('=== NAVEGACIÓN DESPUÉS DE RONDA ===');
+      print('Equipo actual: ${widget.team!.name} (índice: $currentTeamIndex)');
+      print('Siguiente equipo: ${nextTeam.name} (índice: $nextTeamIndex)');
+      print('Ronda actual: ${widget.currentRound}');
+      print('Siguiente ronda: $nextRound');
+      print('Total rondas: ${widget.totalRounds}');
+
+      // Lógica corregida: 
+      // - Si nextTeamIndex != 0: aún hay equipos por jugar en la ronda actual
+      // - Si nextTeamIndex == 0 Y nextRound <= totalRounds: nueva ronda válida
+      final shouldContinue = (nextTeamIndex != 0) || (nextTeamIndex == 0 && nextRound <= widget.totalRounds!);
+      
+      print('¿Debe continuar? $shouldContinue');
+      print('Razón: nextTeamIndex=$nextTeamIndex, nextRound=$nextRound, totalRounds=${widget.totalRounds}');
+
+      if (shouldContinue) {
         // Continuar con el siguiente turno
         Navigator.pushReplacement(
           context,
@@ -169,8 +220,8 @@ class _WordListGameScreenState extends State<WordListGameScreen> {
         );
       }
     } else {
-      // Modo individual - volver al menú
-      Navigator.pop(context);
+      // Modo individual - volver al menú principal
+      Navigator.popUntil(context, (route) => route.isFirst);
     }
   }
 
@@ -333,6 +384,12 @@ class _WordListGameScreenState extends State<WordListGameScreen> {
   Widget _buildTimerAndScore() {
     final isLowTime = timeRemaining <= 10;
     final score = wordAnswers.values.where((answer) => answer == true).length;
+    
+    print('=== RENDERIZANDO TIMER ===');
+    print('timeRemaining: $timeRemaining');
+    print('isGameActive: $isGameActive');
+    print('score: $score');
+    print('isLowTime: $isLowTime');
     
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20),

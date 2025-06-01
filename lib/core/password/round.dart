@@ -1,7 +1,9 @@
 import '../models/word.dart';
 
 class Round {
+  final int roundNumber;
   final List<Word> words;
+  final String? category;
   final int timeLimit;
   int currentWordIndex;
   int score;
@@ -11,12 +13,30 @@ class Round {
   int _accumulatedPauseTime = 0;
 
   Round({
-    required this.words,
+    required this.roundNumber,
+    required List<dynamic> words, // Puede ser List<String> o List<Word>
+    this.category,
     this.timeLimit = 60,
     this.currentWordIndex = 0,
     this.score = 0,
     this.isFinished = false,
-  });
+  }) : words = _convertToWords(words);
+
+  // Método estático para convertir strings a Words si es necesario
+  static List<Word> _convertToWords(List<dynamic> words) {
+    return words.map((word) {
+      if (word is String) {
+        return Word(
+          text: word,
+          category: 'mixed', // Categoría por defecto
+        );
+      } else if (word is Word) {
+        return word;
+      } else {
+        throw ArgumentError('Words must be either String or Word objects');
+      }
+    }).toList();
+  }
 
   bool get hasNextWord => currentWordIndex < words.length - 1;
   

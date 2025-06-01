@@ -15,7 +15,7 @@ class TeamTransitionScreen extends StatelessWidget {
   final List<Team> allTeams;
   final GameMode gameMode;
 
-  const TeamTransitionScreen({
+  TeamTransitionScreen({
     super.key,
     required this.team,
     required this.currentRound,
@@ -24,10 +24,26 @@ class TeamTransitionScreen extends StatelessWidget {
     required this.category,
     required this.allTeams,
     this.gameMode = GameMode.oneByOne,
-  });
+  }) {
+    print('=== CREANDO TEAM TRANSITION SCREEN ===');
+    print('Equipo: ${team.name}');
+    print('Ronda: $currentRound de $totalRounds');
+    print('Modo de juego: $gameMode');
+    print('Categoría: $category');
+    print('Tiempo límite: $timeLimit');
+    print('Total equipos: ${allTeams.length}');
+  }
 
   @override
   Widget build(BuildContext context) {
+    print('=== CONSTRUYENDO TEAM TRANSITION SCREEN ===');
+    print('Equipo: ${team.name}');
+    print('Ronda: $currentRound de $totalRounds');
+    print('Modo de juego: $gameMode');
+    print('Categoría: $category');
+    print('Tiempo límite: $timeLimit');
+    print('Total equipos: ${allTeams.length}');
+    
     return Scaffold(
       body: Container(
         width: double.infinity,
@@ -305,7 +321,15 @@ class TeamTransitionScreen extends StatelessWidget {
   }
 
   void _startTeamRound(BuildContext context) {
+    print('=== INICIANDO RONDA DESDE TEAM TRANSITION ===');
+    print('Equipo: ${team.name}');
+    print('Ronda: $currentRound de $totalRounds');
+    print('Modo de juego: $gameMode');
+    print('Categoría: $category');
+    print('Tiempo límite: $timeLimit');
+    
     if (gameMode == GameMode.wordList) {
+      print('Navegando a WordListGameScreen...');
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
@@ -321,6 +345,7 @@ class TeamTransitionScreen extends StatelessWidget {
         ),
       );
     } else {
+      print('Navegando a GameScreen...');
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(

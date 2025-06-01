@@ -3,9 +3,15 @@ import 'package:flutter_animate/flutter_animate.dart';
 import '../../core/theme/dopamine_theme.dart';
 import 'team_transition_screen.dart';
 import '../../core/models/team.dart';
+import '../../core/models/game_mode.dart';
 
 class TeamSetupScreen extends StatefulWidget {
-  const TeamSetupScreen({super.key});
+  final GameMode gameMode;
+  
+  const TeamSetupScreen({
+    super.key,
+    this.gameMode = GameMode.oneByOne,
+  });
 
   @override
   State<TeamSetupScreen> createState() => _TeamSetupScreenState();
@@ -17,7 +23,7 @@ class _TeamSetupScreenState extends State<TeamSetupScreen> {
     Team(name: 'Equipo 2', color: DopamineColors.secondaryPink),
   ];
   
-  int rounds = 3;
+  int rounds = 1;
   int timeLimit = 60;
   String selectedCategory = 'mixed';
 
@@ -101,7 +107,7 @@ class _TeamSetupScreenState extends State<TeamSetupScreen> {
               ),
               const Expanded(
                 child: Text(
-                  'Configuración de Equipos',
+                  'Batalla de Equipos',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 24,
@@ -121,7 +127,7 @@ class _TeamSetupScreenState extends State<TeamSetupScreen> {
               borderRadius: BorderRadius.circular(20),
             ),
             child: const Text(
-              '⚡ Personaliza tu juego y ¡que comience la diversión! ⚡',
+              '⚡ Configura tus equipos para una batalla épica ⚡',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 16,
@@ -304,32 +310,70 @@ class _TeamSetupScreenState extends State<TeamSetupScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            const Icon(Icons.settings, color: Colors.green, size: 28),
-            const SizedBox(width: 12),
-            const Text(
-              'Configuración del Juego',
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: Colors.green,
+        Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            gradient: DopamineGradients.warningGradient,
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                color: DopamineColors.warningOrange.withOpacity(0.3),
+                blurRadius: 15,
+                offset: const Offset(0, 8),
               ),
-            ),
-          ],
+            ],
+          ),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: const Icon(Icons.settings, color: Colors.white, size: 28),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Configuración del Juego',
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      '🎯 ${rounds == 1 ? "1 ronda" : "$rounds rondas"} por equipo\n⏱️ $timeLimit segundos de pura adrenalina',
+                      style: TextStyle(
+                        color: Colors.white.withOpacity(0.9),
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        height: 1.3,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
         const SizedBox(height: 20),
         _buildSettingCard(
           icon: Icons.repeat,
-          title: 'Rondas por equipo',
-          value: '$rounds',
-          color: Colors.blue,
+          title: 'Número de rondas',
+          value: rounds == 1 ? '1 ronda' : '$rounds rondas',
+          color: DopamineColors.primaryPurple,
           child: Slider(
             value: rounds.toDouble(),
             min: 1,
             max: 5,
             divisions: 4,
-            activeColor: Colors.blue,
+            activeColor: DopamineColors.primaryPurple,
             onChanged: (value) {
               setState(() {
                 rounds = value.toInt();
@@ -342,13 +386,13 @@ class _TeamSetupScreenState extends State<TeamSetupScreen> {
           icon: Icons.timer,
           title: 'Tiempo por ronda',
           value: '$timeLimit seg',
-          color: Colors.orange,
+          color: DopamineColors.warningOrange,
           child: Slider(
             value: timeLimit.toDouble(),
             min: 30,
             max: 90,
             divisions: 6,
-            activeColor: Colors.orange,
+            activeColor: DopamineColors.warningOrange,
             onChanged: (value) {
               setState(() {
                 timeLimit = value.toInt();
@@ -522,30 +566,62 @@ class _TeamSetupScreenState extends State<TeamSetupScreen> {
   Widget _buildStartButton() {
     return Container(
       padding: const EdgeInsets.all(20),
-      child: SizedBox(
+      child: Container(
         width: double.infinity,
-        height: 60,
+        height: 70,
+        decoration: BoxDecoration(
+          gradient: DopamineGradients.primaryGradient,
+          borderRadius: BorderRadius.circular(35),
+          boxShadow: [
+            BoxShadow(
+              color: DopamineColors.primaryPurple.withOpacity(0.4),
+              blurRadius: 20,
+              offset: const Offset(0, 10),
+            ),
+          ],
+        ),
         child: ElevatedButton(
           onPressed: _startGame,
           style: ElevatedButton.styleFrom(
-            backgroundColor: Theme.of(context).primaryColor,
-            foregroundColor: Colors.white,
+            backgroundColor: Colors.transparent,
+            shadowColor: Colors.transparent,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(30),
+              borderRadius: BorderRadius.circular(35),
             ),
-            elevation: 8,
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.play_arrow, size: 28),
-              const SizedBox(width: 12),
-              const Text(
-                'Comenzar Juego',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(12),
                 ),
+                child: const Icon(Icons.flash_on, color: Colors.white, size: 28),
+              ),
+              const SizedBox(width: 16),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    '¡COMENZAR BATALLA!',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  Text(
+                    '${teams.length} equipos • 1 ronda • $timeLimit seg',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.white.withOpacity(0.9),
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
@@ -553,7 +629,9 @@ class _TeamSetupScreenState extends State<TeamSetupScreen> {
       ),
     ).animate()
       .fadeIn(duration: const Duration(milliseconds: 1400))
-      .slideY(begin: 0.3);
+      .slideY(begin: 0.3)
+      .then()
+      .shimmer(duration: const Duration(seconds: 2));
   }
 
   void _addTeam() {
@@ -610,6 +688,15 @@ class _TeamSetupScreenState extends State<TeamSetupScreen> {
   }
 
   void _startGame() {
+    print('=== INICIANDO JUEGO DESDE TEAM SETUP ===');
+    print('Modo de juego: ${widget.gameMode}');
+    print('Primer equipo: ${teams[0].name}');
+    print('Ronda inicial: 1');
+    print('Total rondas: $rounds');
+    print('Tiempo límite: $timeLimit');
+    print('Categoría: $selectedCategory');
+    print('Total equipos: ${teams.length}');
+    
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
@@ -620,9 +707,12 @@ class _TeamSetupScreenState extends State<TeamSetupScreen> {
           timeLimit: timeLimit,
           category: selectedCategory,
           allTeams: teams,
+          gameMode: widget.gameMode,
         ),
       ),
     );
+    
+    print('Navegación a TeamTransitionScreen completada');
   }
 
   void _showSnackBar(String message, Color color) {

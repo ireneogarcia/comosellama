@@ -58,8 +58,8 @@ class RoundBloc extends ChangeNotifier {
   }
 
   Future<void> startNewRound({
-    String category = 'mixed',
-    int wordCount = 5,
+    String? category,
+    int? roundNumber,
     int timeLimit = 60,
   }) async {
     try {
@@ -68,10 +68,11 @@ class RoundBloc extends ChangeNotifier {
       _state = _state.copyWith(status: RoundStatus.loading);
       notifyListeners();
 
+      print('=== INICIANDO RONDA ${roundNumber ?? _gameController.currentRoundNumber} EN ROUND BLOC ===');
+
       final round = await _gameController.createRound(
         category: category,
-        wordCount: wordCount,
-        timeLimit: timeLimit,
+        roundNumber: roundNumber,
       );
 
       _state = _state.copyWith(
@@ -83,7 +84,10 @@ class RoundBloc extends ChangeNotifier {
       round.start();
       notifyListeners();
       _startTimer();
+      
+      print('Ronda iniciada con ${round.words.length} palabras');
     } catch (e) {
+      print('Error al iniciar ronda: $e');
       _state = _state.copyWith(
         status: RoundStatus.error,
         errorMessage: e.toString(),
@@ -92,10 +96,21 @@ class RoundBloc extends ChangeNotifier {
     }
   }
 
+  @Deprecated('Use startNewRound() instead')
+  Future<void> startLegacyRound({
+    String category = 'mixed',
+    int wordCount = 5,
+    int timeLimit = 60,
+  }) async {
+    await startNewRound(
+      category: category,
+      timeLimit: timeLimit,
+    );
+  }
+
   void handleAnswer(bool isCorrect) {
     if (_state.status != RoundStatus.playing) return;
     
-    // Proporcionar feedback inmediato
     if (isCorrect) {
       FeedbackService().correctAnswerFeedback();
     } else {
@@ -120,7 +135,6 @@ class RoundBloc extends ChangeNotifier {
         return;
       }
 
-      // Advertencia cuando quedan 10 segundos
       if (round.remainingTime <= 10 && round.remainingTime > 0 && !_hasWarned) {
         _hasWarned = true;
         FeedbackService().timeWarningFeedback();
@@ -175,7 +189,6 @@ class RoundBloc extends ChangeNotifier {
     _timer?.cancel();
     FeedbackService().roundEndFeedback();
     
-    // Actualizar la puntuación de la ronda actual
     if (_state.round != null) {
       _state.round!.score = score;
     }
@@ -192,5 +205,16 @@ class RoundBloc extends ChangeNotifier {
     _hasWarned = false;
     _state = RoundState();
     notifyListeners();
+  }
+
+  String getRoundInfo() {
+    final round = _state.round;
+    if (round == null) return 'Sin ronda activa';
+    
+    return 'Ronda ${round.roundNumber} - ${round.words.length} palabras';
+  }
+
+  Future<List<String>> getAvailableCategories() async {
+    return _gameController.getAvailableCategories();
   }
 } 

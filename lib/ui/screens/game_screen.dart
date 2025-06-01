@@ -35,36 +35,49 @@ class GameScreen extends StatefulWidget {
 }
 
 class _GameScreenState extends State<GameScreen> {
+  bool _hasNavigated = false; // Bandera para evitar navegaciones múltiples
+
   @override
   void initState() {
     super.initState();
     
+    print('=== INICIALIZANDO GAME SCREEN ===');
+    print('Equipo: ${widget.team?.name ?? "Individual"}');
+    print('Ronda: ${widget.currentRound ?? 1}');
+    print('Modo de juego: ${widget.gameMode}');
+    print('Categoría: ${widget.category}');
+    
     // Si es modalidad de lista de palabras, redirigir a la pantalla correspondiente
     if (widget.gameMode == GameMode.wordList) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => WordListGameScreen(
-              category: widget.category,
-              team: widget.team,
-              currentRound: widget.currentRound,
-              totalRounds: widget.totalRounds,
-              allTeams: widget.allTeams,
-              timeLimit: widget.timeLimit,
-              gameMode: widget.gameMode,
+        if (!_hasNavigated) {
+          _hasNavigated = true;
+          print('Redirigiendo a WordListGameScreen...');
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => WordListGameScreen(
+                category: widget.category,
+                team: widget.team,
+                currentRound: widget.currentRound,
+                totalRounds: widget.totalRounds,
+                allTeams: widget.allTeams,
+                timeLimit: widget.timeLimit,
+                gameMode: widget.gameMode,
+              ),
             ),
-          ),
-        );
+          );
+        }
       });
       return;
     }
     
-    // Resetear el estado del RoundBloc cuando se crea una nueva instancia
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final roundBloc = Provider.of<RoundBloc>(context, listen: false);
-      roundBloc.resetState();
-    });
+    // RESETEAR EL BLOC INMEDIATAMENTE Y DE FORMA SÍNCRONA
+    // Esto debe ocurrir ANTES del primer build para evitar que se ejecute con estado finished
+    final roundBloc = Provider.of<RoundBloc>(context, listen: false);
+    print('Estado del bloc ANTES del reset: ${roundBloc.state.status}');
+    roundBloc.resetState();
+    print('Estado del bloc DESPUÉS del reset: ${roundBloc.state.status}');
   }
 
   @override
@@ -108,15 +121,28 @@ class _GameScreenState extends State<GameScreen> {
             builder: (context, roundBloc, child) {
               final state = roundBloc.state;
               
+              print('=== GAME SCREEN BUILD - ESTADO: ${state.status} ===');
+              print('Equipo: ${widget.team?.name ?? "Individual"}');
+              print('Ronda: ${widget.currentRound ?? 1}');
+              print('Estado del bloc: ${state.status}');
+              if (state.round != null) {
+                print('Tiempo restante: ${state.round!.remainingTime}');
+                print('Palabras totales: ${state.round!.words.length}');
+                print('Palabra actual: ${state.round!.currentWordIndex}');
+              }
+              
               switch (state.status) {
                 case RoundStatus.initial:
+                  print('Mostrando loading - estado INITIAL');
                   _startRound(roundBloc);
                   return _buildLoadingView();
                   
                 case RoundStatus.loading:
+                  print('Mostrando loading - estado LOADING');
                   return _buildLoadingView();
                   
                 case RoundStatus.playing:
+                  print('Mostrando juego - estado PLAYING');
                   return _GameView(
                     word: state.round!.currentWord.text,
                     timeRemaining: state.round!.remainingTime,
@@ -128,15 +154,18 @@ class _GameScreenState extends State<GameScreen> {
                   );
                   
                 case RoundStatus.paused:
+                  print('Mostrando pausa - estado PAUSED');
                   return _PausedView(
                     onResume: () => roundBloc.resumeRound(),
                     team: widget.team,
                   );
                   
                 case RoundStatus.finished:
+                  print('Juego terminado - estado FINISHED, navegando...');
                   return _handleGameFinished(context, roundBloc);
                   
                 case RoundStatus.error:
+                  print('Error en el juego - estado ERROR: ${state.errorMessage}');
                   return Center(
                     child: Container(
                       padding: const EdgeInsets.all(20),
@@ -225,9 +254,22 @@ class _GameScreenState extends State<GameScreen> {
   }
 
   void _startRound(RoundBloc roundBloc) {
+    // Evitar iniciar múltiples rondas
+    if (roundBloc.state.status != RoundStatus.initial) {
+      print('Ronda ya iniciada o en progreso, estado: ${roundBloc.state.status}');
+      return;
+    }
+    
     Future.microtask(() {
+      print('=== INICIANDO RONDA EN GAME SCREEN ===');
+      print('Categoría: ${widget.category}');
+      print('Ronda actual: ${widget.currentRound ?? 1}');
+      print('Tiempo límite: ${widget.timeLimit}');
+      print('Estado actual del bloc: ${roundBloc.state.status}');
+      
       roundBloc.startNewRound(
         category: widget.category,
+        roundNumber: widget.currentRound ?? 1,
         timeLimit: widget.timeLimit,
       );
     });
@@ -286,6 +328,12 @@ class _GameScreenState extends State<GameScreen> {
   }
 
   void _navigateAfterRound(BuildContext context, RoundBloc roundBloc) {
+    if (_hasNavigated) {
+      print('Navegación ya realizada, evitando duplicado');
+      return;
+    }
+    _hasNavigated = true;
+    
     if (widget.team != null && widget.allTeams != null) {
       // Modo por equipos
       final roundScore = roundBloc.state.round?.score ?? 0;
@@ -298,10 +346,25 @@ class _GameScreenState extends State<GameScreen> {
       final nextTeamIndex = (currentTeamIndex + 1) % widget.allTeams!.length;
       final nextTeam = widget.allTeams![nextTeamIndex];
       
-      // Si volvemos al primer equipo, incrementamos la ronda
+      // La ronda solo se incrementa cuando volvemos al primer equipo (todos han jugado)
       final nextRound = nextTeamIndex == 0 ? widget.currentRound! + 1 : widget.currentRound!;
 
-      if (nextRound <= widget.totalRounds!) {
+      print('=== NAVEGACIÓN DESPUÉS DE RONDA ===');
+      print('Equipo actual: ${widget.team!.name} (índice: $currentTeamIndex)');
+      print('Siguiente equipo: ${nextTeam.name} (índice: $nextTeamIndex)');
+      print('Ronda actual: ${widget.currentRound}');
+      print('Siguiente ronda: $nextRound');
+      print('Total rondas: ${widget.totalRounds}');
+
+      // Lógica corregida: 
+      // - Si nextTeamIndex != 0: aún hay equipos por jugar en la ronda actual
+      // - Si nextTeamIndex == 0 Y nextRound <= totalRounds: nueva ronda válida
+      final shouldContinue = (nextTeamIndex != 0) || (nextTeamIndex == 0 && nextRound <= widget.totalRounds!);
+      
+      print('¿Debe continuar? $shouldContinue');
+      print('Razón: nextTeamIndex=$nextTeamIndex, nextRound=$nextRound, totalRounds=${widget.totalRounds}');
+
+      if (shouldContinue) {
         // Continuar con el siguiente turno
         Navigator.pushReplacement(
           context,

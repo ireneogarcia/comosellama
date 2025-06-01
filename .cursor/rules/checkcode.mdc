@@ -1,6 +1,6 @@
 ---
 description: 
 globs: 
-alwaysApply: false
+alwaysApply: true
 ---
-ejecuta: flutter run -d chrome antes de acabar para verificar que todo esta correcto, si no lo esta haz todos los cambios necesarios.
+siempre ejecuta: "flutter run -d chrome" antes de acabar si la ejecucion da error realiza todos los ajustes necesarios.

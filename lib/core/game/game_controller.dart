@@ -8,7 +8,7 @@ class GameController {
   List<Team>? _teams;
   int _currentTeamIndex = 0;
   int _currentRoundNumber = 1;
-  int _totalRounds = 1;
+  int _totalRounds = 5; // Por defecto 5 rondas con el nuevo sistema
 
   GameController(this._roundService);
 
@@ -24,7 +24,7 @@ class GameController {
   // Configuración del juego
   void setupGame({
     List<Team>? teams,
-    int totalRounds = 1,
+    int totalRounds = 5, // Por defecto 5 rondas
   }) {
     _teams = teams;
     _totalRounds = totalRounds;
@@ -32,37 +32,60 @@ class GameController {
     _currentRoundNumber = 1;
   }
 
-  // Crear nueva ronda
+  // Crear nueva ronda usando el sistema mejorado
   Future<Round> createRound({
+    String? category,
+    int? roundNumber,
+  }) async {
+    final roundNum = roundNumber ?? _currentRoundNumber;
+    print('=== CREANDO RONDA $roundNum EN GAME CONTROLLER ===');
+    
+    _currentRound = await _roundService.generateRound(
+      roundNum,
+      category: category,
+    );
+    
+    print('Ronda $roundNum creada con ${_currentRound!.words.length} palabras');
+    return _currentRound!;
+  }
+
+  // Método legacy para compatibilidad (deprecated)
+  @Deprecated('Use createRound() instead')
+  Future<Round> createLegacyRound({
     String category = 'mixed',
     int wordCount = 5,
     int timeLimit = 60,
   }) async {
-    _currentRound = await _roundService.createRound(
-      category: category,
-      wordCount: wordCount,
-      timeLimit: timeLimit,
-    );
-    return _currentRound!;
+    // Convertir a nuevo sistema usando ronda 1 por defecto
+    return createRound(category: category);
   }
 
   // Manejar respuesta
   void handleAnswer(bool isCorrect) {
     if (_currentRound == null) return;
-    _roundService.handleSwipe(_currentRound!, isCorrect);
+    _currentRound!.markCurrentWord(isCorrect);
   }
 
   // Verificar si el tiempo se agotó
   bool isTimeUp() {
     if (_currentRound == null) return false;
-    return _roundService.isTimeUp(_currentRound!);
+    return _currentRound!.remainingTime <= 0;
   }
 
   // Finalizar ronda actual
   Map<String, dynamic> finishCurrentRound() {
     if (_currentRound == null) return {};
     
-    final stats = _roundService.getRoundStats(_currentRound!);
+    final stats = {
+      'roundNumber': _currentRound!.roundNumber,
+      'totalWords': _currentRound!.words.length,
+      'correctAnswers': _currentRound!.correctAnswers,
+      'wrongAnswers': _currentRound!.wrongAnswers,
+      'accuracy': _currentRound!.accuracy,
+      'score': _currentRound!.score,
+      'timeSpent': _currentRound!.timeSpent,
+      'category': _currentRound!.category,
+    };
     
     // Actualizar puntuación del equipo actual
     if (_teams != null && _currentTeamIndex < _teams!.length) {
@@ -84,6 +107,11 @@ class GameController {
     }
     
     return !isGameFinished;
+  }
+
+  // Avanzar a la siguiente ronda directamente
+  void moveToNextRound() {
+    _currentRoundNumber++;
   }
 
   // Obtener resultados finales
@@ -122,5 +150,10 @@ class GameController {
         team.score = 0;
       }
     }
+  }
+
+  // Obtener categorías disponibles
+  Future<List<String>> getAvailableCategories() async {
+    return _roundService.getAvailableCategories();
   }
 } 

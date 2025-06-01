@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../../core/theme/dopamine_theme.dart';
 import 'quick_game_category_screen.dart';
+import 'team_setup_screen.dart';
 import '../../core/models/game_mode.dart';
+import '../../core/models/team.dart';
+import 'team_transition_screen.dart';
 
 class GameModeSelectionScreen extends StatelessWidget {
   const GameModeSelectionScreen({super.key});
@@ -103,7 +106,7 @@ class GameModeSelectionScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  'Elige la modalidad que más te emocione 🚀',
+                  'Las rondas aumentan progresivamente en dificultad 🎯',
                   style: TextStyle(
                     color: Colors.white.withOpacity(0.9),
                     fontSize: 14,
@@ -125,18 +128,22 @@ class GameModeSelectionScreen extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         _DopamineGameModeCard(
-          gameMode: GameMode.oneByOne,
+          title: 'Juego Rápido',
+          description: 'Una ronda rápida para jugar solo o con amigos',
+          icon: '⚡',
           gradient: DopamineGradients.successGradient,
-          onTap: () => _onGameModeSelected(context, GameMode.oneByOne),
+          onTap: () => _showQuickGameOptions(context),
         ).animate(delay: const Duration(milliseconds: 200))
           .fadeIn()
           .slideX(begin: -0.3)
           .scale(begin: const Offset(0.8, 0.8)),
         const SizedBox(height: 25),
         _DopamineGameModeCard(
-          gameMode: GameMode.wordList,
+          title: 'Juego por Equipos',
+          description: 'Configura equipos y rondas personalizadas',
+          icon: '👥',
           gradient: DopamineGradients.warningGradient,
-          onTap: () => _onGameModeSelected(context, GameMode.wordList),
+          onTap: () => _navigateToTeamSetup(context, GameMode.oneByOne),
         ).animate(delay: const Duration(milliseconds: 400))
           .fadeIn()
           .slideX(begin: 0.3)
@@ -145,23 +152,182 @@ class GameModeSelectionScreen extends StatelessWidget {
     );
   }
 
-  void _onGameModeSelected(BuildContext context, GameMode gameMode) {
+  void _showQuickGameOptions(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        title: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                gradient: DopamineGradients.successGradient,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: const Icon(Icons.flash_on, color: Colors.white, size: 24),
+            ),
+            const SizedBox(width: 12),
+            const Text('Juego Rápido'),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text(
+              'Selecciona el modo de juego:',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+            ),
+            const SizedBox(height: 20),
+            _QuickGameOption(
+              title: 'Uno por Uno',
+              description: 'Adivina palabra por palabra',
+              icon: '🎯',
+              gameMode: GameMode.oneByOne,
+            ),
+            const SizedBox(height: 12),
+            _QuickGameOption(
+              title: 'Lista de Palabras',
+              description: 'Marca todas las que sepas',
+              icon: '📝',
+              gameMode: GameMode.wordList,
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Cancelar'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _navigateToTeamSetup(BuildContext context, GameMode gameMode) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => QuickGameCategoryScreen(gameMode: gameMode),
+        builder: (context) => TeamSetupScreen(gameMode: gameMode),
+      ),
+    );
+  }
+}
+
+class _QuickGameOption extends StatelessWidget {
+  final String title;
+  final String description;
+  final String icon;
+  final GameMode gameMode;
+
+  const _QuickGameOption({
+    required this.title,
+    required this.description,
+    required this.icon,
+    required this.gameMode,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        gradient: gameMode == GameMode.oneByOne 
+            ? DopamineGradients.electricGradient
+            : DopamineGradients.primaryGradient,
+        borderRadius: BorderRadius.circular(15),
+        boxShadow: [
+          BoxShadow(
+            color: (gameMode == GameMode.oneByOne 
+                ? DopamineColors.electricBlue 
+                : DopamineColors.primaryPurple).withOpacity(0.3),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {
+            Navigator.of(context).pop();
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => QuickGameCategoryScreen(gameMode: gameMode),
+              ),
+            );
+          },
+          borderRadius: BorderRadius.circular(15),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Row(
+              children: [
+                Container(
+                  width: 50,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Center(
+                    child: Text(
+                      icon,
+                      style: const TextStyle(fontSize: 24),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        description,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.white.withOpacity(0.8),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const Icon(
+                  Icons.arrow_forward_ios,
+                  color: Colors.white,
+                  size: 16,
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
 }
 
 class _DopamineGameModeCard extends StatelessWidget {
-  final GameMode gameMode;
+  final String title;
+  final String description;
+  final String icon;
   final LinearGradient gradient;
   final VoidCallback onTap;
 
   const _DopamineGameModeCard({
-    required this.gameMode,
+    required this.title,
+    required this.description,
+    required this.icon,
     required this.gradient,
     required this.onTap,
   });
@@ -199,14 +365,14 @@ class _DopamineGameModeCard extends StatelessWidget {
                   ),
                   child: Center(
                     child: Text(
-                      gameMode.icon,
+                      icon,
                       style: const TextStyle(fontSize: 50),
                     ),
                   ),
                 ),
                 const SizedBox(height: 20),
                 Text(
-                  gameMode.name,
+                  title,
                   style: const TextStyle(
                     fontSize: 26,
                     fontWeight: FontWeight.bold,
@@ -221,7 +387,7 @@ class _DopamineGameModeCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(15),
                   ),
                   child: Text(
-                    gameMode.description,
+                    description,
                     textAlign: TextAlign.center,
                     style: const TextStyle(
                       fontSize: 16,
@@ -255,7 +421,7 @@ class _DopamineGameModeCard extends StatelessWidget {
                       ),
                       const SizedBox(width: 8),
                       Text(
-                        'JUGAR AHORA',
+                        'JUGAR',
                         style: TextStyle(
                           color: gradient.colors.first,
                           fontWeight: FontWeight.bold,
