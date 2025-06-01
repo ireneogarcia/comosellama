@@ -70,6 +70,11 @@ class RoundService {
   }
 
   Future<List<String>> _getWordsForDifficulty(Difficulty difficulty, String? category) async {
+    print('🔍 Buscando palabras de dificultad: ${difficulty.value} para categoría: ${category ?? "mixed"}');
+    
+    // DIAGNÓSTICO: Probar carga del CSV
+    await _wordRepository.testCsvLoading();
+    
     try {
       // Usar el método getWordsByDifficulty del WordRepository
       final words = await _wordRepository.getWordsByDifficulty(
@@ -77,13 +82,23 @@ class RoundService {
         count: 100, // Obtener muchas palabras para poder seleccionar
       );
       
+      print('✅ Encontradas ${words.length} palabras de dificultad ${difficulty.value}');
+      
       // Filtrar por categoría si se especifica
       List<String> filteredWords;
       if (category != null && category != 'mixed') {
         final filtered = words.where((word) => word.category == category).toList();
         filteredWords = filtered.map((word) => word.text).toList();
+        print('📋 Después de filtrar por categoría "$category": ${filteredWords.length} palabras');
       } else {
         filteredWords = words.map((word) => word.text).toList();
+        print('📋 Sin filtro de categoría: ${filteredWords.length} palabras');
+      }
+      
+      // Mostrar algunas palabras de ejemplo
+      if (filteredWords.isNotEmpty) {
+        final examples = filteredWords.take(3).join(', ');
+        print('📝 Ejemplos: $examples');
       }
       
       // Si no hay suficientes palabras de esta dificultad, usar fallback
@@ -94,13 +109,15 @@ class RoundService {
       
       return filteredWords;
     } catch (e) {
-      print('Error obteniendo palabras de dificultad ${difficulty.value}: $e');
-      print('Usando fallback...');
+      print('❌ Error obteniendo palabras de dificultad ${difficulty.value}: $e');
+      print('🔄 Usando fallback...');
       return await _getFallbackWords(difficulty, category);
     }
   }
 
   Future<List<String>> _getFallbackWords(Difficulty difficulty, String? category) async {
+    print('🔄 INICIANDO FALLBACK para dificultad: ${difficulty.value}');
+    
     // Estrategia de fallback: usar dificultades similares
     List<Difficulty> fallbackDifficulties;
     
@@ -119,35 +136,47 @@ class RoundService {
         break;
     }
     
+    print('🎯 Intentando con dificultades de fallback: ${fallbackDifficulties.map((d) => d.value).join(', ')}');
+    
     // Intentar con cada dificultad de fallback
     for (final fallbackDifficulty in fallbackDifficulties) {
+      print('🔍 Probando fallback con dificultad: ${fallbackDifficulty.value}');
+      
       try {
         final words = await _wordRepository.getWordsByDifficulty(
           difficulty: fallbackDifficulty.value,
           count: 50,
         );
         
+        print('✅ Fallback encontró ${words.length} palabras de dificultad ${fallbackDifficulty.value}');
+        
         List<String> filteredWords;
         if (category != null && category != 'mixed') {
           final filtered = words.where((word) => word.category == category).toList();
           filteredWords = filtered.map((word) => word.text).toList();
+          print('📋 Después de filtrar por categoría "$category": ${filteredWords.length} palabras');
         } else {
           filteredWords = words.map((word) => word.text).toList();
+          print('📋 Sin filtro de categoría: ${filteredWords.length} palabras');
         }
         
         if (filteredWords.isNotEmpty) {
+          final examples = filteredWords.take(3).join(', ');
           print('✅ Usando ${filteredWords.length} palabras de dificultad ${fallbackDifficulty.value} como fallback para ${difficulty.value}');
+          print('📝 Ejemplos: $examples');
           return filteredWords;
+        } else {
+          print('⚠️ No hay palabras después del filtro para ${fallbackDifficulty.value}');
         }
       } catch (e) {
-        print('Error con fallback ${fallbackDifficulty.value}: $e');
+        print('❌ Error con fallback ${fallbackDifficulty.value}: $e');
         continue;
       }
     }
     
     // Si todo falla, usar palabras genéricas
-    print('⚠️ Usando palabras genéricas como último recurso');
-    return ['palabra', 'juego', 'diversión', 'equipo', 'ronda'];
+    print('🚨 ÚLTIMO RECURSO: Usando palabras genéricas');
+    return ['casa', 'perro', 'gato', 'mesa', 'silla', 'agua', 'fuego', 'tierra', 'aire', 'sol'];
   }
 
   Future<List<String>> getAvailableCategories() async {

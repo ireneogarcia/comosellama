@@ -23,37 +23,35 @@ class RoundConfigurationProvider {
     RoundConfiguration(
       roundNumber: 1,
       wordsPerDifficulty: {
-        Difficulty.facil: 2,
+        Difficulty.facil: 3,
         Difficulty.media: 2,
-        Difficulty.dificil: 1,
+     
       },
     ),
     // Ronda 2: 1 fácil, 3 medias, 1 difícil
     RoundConfiguration(
       roundNumber: 2,
       wordsPerDifficulty: {
-        Difficulty.facil: 1,
-        Difficulty.media: 3,
-        Difficulty.dificil: 1,
+        Difficulty.facil: 2,
+        Difficulty.media: 3
+  
       },
     ),
     // Ronda 3: 0 fáciles, 3 medias, 2 difíciles
     RoundConfiguration(
       roundNumber: 3,
       wordsPerDifficulty: {
-        Difficulty.facil: 0,
+        Difficulty.facil: 1,
         Difficulty.media: 3,
-        Difficulty.dificil: 2,
+        Difficulty.dificil: 1,
       },
     ),
     // Ronda 4: 0 fáciles, 2 medias, 2 difíciles, 1 extrema
     RoundConfiguration(
       roundNumber: 4,
       wordsPerDifficulty: {
-        Difficulty.facil: 0,
-        Difficulty.media: 2,
-        Difficulty.dificil: 2,
-        Difficulty.extrema: 1,
+        Difficulty.media: 4,
+        Difficulty.dificil: 1
       },
     ),
     // Ronda 5: 0 fáciles, 2 medias, 2 difíciles, 1 extrema

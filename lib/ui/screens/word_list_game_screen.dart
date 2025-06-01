@@ -540,6 +540,9 @@ class _WordListGameScreenState extends State<WordListGameScreen> {
                       setState(() {
                         wordAnswers[index] = isChecked ? null : true;
                       });
+                      
+                      // Verificar si todas las palabras están marcadas como acertadas
+                      _checkIfAllWordsCompleted();
                     },
                     index: index,
                   );
@@ -602,6 +605,34 @@ class _WordListGameScreenState extends State<WordListGameScreen> {
         ),
       ),
     );
+  }
+
+  void _checkIfAllWordsCompleted() {
+    // Verificar si todas las palabras están marcadas como acertadas
+    if (!isGameActive) return; // No hacer nada si el juego ya no está activo
+    
+    final roundBloc = Provider.of<RoundBloc>(context, listen: false);
+    final words = roundBloc.state.round?.words ?? [];
+    
+    // Verificar si todas las palabras tienen respuesta verdadera
+    bool allCompleted = true;
+    for (int i = 0; i < words.length; i++) {
+      if (wordAnswers[i] != true) {
+        allCompleted = false;
+        break;
+      }
+    }
+    
+    if (allCompleted && words.isNotEmpty) {
+      print('🎉 ¡Todas las palabras marcadas como acertadas! Finalizando automáticamente...');
+      
+      // Pequeño delay para que el usuario vea la última animación
+      Future.delayed(const Duration(milliseconds: 500), () {
+        if (isGameActive) { // Verificar nuevamente que el juego siga activo
+          _finishGame();
+        }
+      });
+    }
   }
 }
 

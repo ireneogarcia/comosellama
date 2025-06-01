@@ -26,6 +26,7 @@ class _TeamSetupScreenState extends State<TeamSetupScreen> {
   int rounds = 1;
   int timeLimit = 60;
   String selectedCategory = 'mixed';
+  GameMode selectedGameMode = GameMode.oneByOne;
 
   final List<CategoryOption> categories = [
     CategoryOption(value: 'mixed', name: 'Mixta', icon: '🎲', gradient: const LinearGradient(colors: [DopamineColors.accent4, DopamineColors.primaryPurple])),
@@ -37,6 +38,12 @@ class _TeamSetupScreenState extends State<TeamSetupScreen> {
     CategoryOption(value: 'colores', name: 'Colores', icon: '🎨', gradient: const LinearGradient(colors: [DopamineColors.accent2, DopamineColors.successGreen])),
     CategoryOption(value: 'emociones', name: 'Emociones', icon: '😊', gradient: const LinearGradient(colors: [DopamineColors.secondaryPink, DopamineColors.accent1])),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    selectedGameMode = widget.gameMode;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -310,59 +317,107 @@ class _TeamSetupScreenState extends State<TeamSetupScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Container(
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            gradient: DopamineGradients.warningGradient,
-            borderRadius: BorderRadius.circular(20),
-            boxShadow: [
-              BoxShadow(
-                color: DopamineColors.warningOrange.withOpacity(0.3),
-                blurRadius: 15,
-                offset: const Offset(0, 8),
-              ),
-            ],
-          ),
+        // Selector de modo de juego
+        _buildSettingCard(
+          icon: Icons.gamepad,
+          title: 'Modo de juego',
+          value: selectedGameMode == GameMode.oneByOne ? '1 por 1' : 'Lista',
+          color: DopamineColors.secondaryPink,
           child: Row(
             children: [
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                child: const Icon(Icons.settings, color: Colors.white, size: 28),
-              ),
-              const SizedBox(width: 16),
               Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Configuración del Juego',
-                      style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                child: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      selectedGameMode = GameMode.oneByOne;
+                    });
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                    decoration: BoxDecoration(
+                      gradient: selectedGameMode == GameMode.oneByOne 
+                          ? const LinearGradient(colors: [DopamineColors.secondaryPink, DopamineColors.accent1])
+                          : null,
+                      color: selectedGameMode == GameMode.oneByOne ? null : Colors.grey.shade100,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: selectedGameMode == GameMode.oneByOne 
+                            ? DopamineColors.secondaryPink 
+                            : Colors.grey.shade300,
+                        width: 2,
                       ),
                     ),
-                    const SizedBox(height: 8),
-                    Text(
-                      '🎯 ${rounds == 1 ? "1 ronda" : "$rounds rondas"} por equipo\n⏱️ $timeLimit segundos de pura adrenalina',
-                      style: TextStyle(
-                        color: Colors.white.withOpacity(0.9),
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                        height: 1.3,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.looks_one,
+                          color: selectedGameMode == GameMode.oneByOne ? Colors.white : Colors.grey.shade600,
+                          size: 20,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          '1 por 1',
+                          style: TextStyle(
+                            color: selectedGameMode == GameMode.oneByOne ? Colors.white : Colors.grey.shade600,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      selectedGameMode = GameMode.wordList;
+                    });
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                    decoration: BoxDecoration(
+                      gradient: selectedGameMode == GameMode.wordList 
+                          ? const LinearGradient(colors: [DopamineColors.secondaryPink, DopamineColors.accent1])
+                          : null,
+                      color: selectedGameMode == GameMode.wordList ? null : Colors.grey.shade100,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: selectedGameMode == GameMode.wordList 
+                            ? DopamineColors.secondaryPink 
+                            : Colors.grey.shade300,
+                        width: 2,
                       ),
                     ),
-                  ],
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.list,
+                          color: selectedGameMode == GameMode.wordList ? Colors.white : Colors.grey.shade600,
+                          size: 20,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Lista',
+                          style: TextStyle(
+                            color: selectedGameMode == GameMode.wordList ? Colors.white : Colors.grey.shade600,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ],
           ),
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: 16),
         _buildSettingCard(
           icon: Icons.repeat,
           title: 'Número de rondas',
@@ -614,7 +669,7 @@ class _TeamSetupScreenState extends State<TeamSetupScreen> {
                     ),
                   ),
                   Text(
-                    '${teams.length} equipos • 1 ronda • $timeLimit seg',
+                    '${teams.length} equipos • ${rounds == 1 ? "1 ronda" : "$rounds rondas"} • $timeLimit seg • ${selectedGameMode == GameMode.oneByOne ? "1x1" : "Lista"}',
                     style: TextStyle(
                       fontSize: 12,
                       color: Colors.white.withOpacity(0.9),
@@ -689,7 +744,7 @@ class _TeamSetupScreenState extends State<TeamSetupScreen> {
 
   void _startGame() {
     print('=== INICIANDO JUEGO DESDE TEAM SETUP ===');
-    print('Modo de juego: ${widget.gameMode}');
+    print('Modo de juego: ${selectedGameMode}');
     print('Primer equipo: ${teams[0].name}');
     print('Ronda inicial: 1');
     print('Total rondas: $rounds');
@@ -707,7 +762,7 @@ class _TeamSetupScreenState extends State<TeamSetupScreen> {
           timeLimit: timeLimit,
           category: selectedCategory,
           allTeams: teams,
-          gameMode: widget.gameMode,
+          gameMode: selectedGameMode,
         ),
       ),
     );

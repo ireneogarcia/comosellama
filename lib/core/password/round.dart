@@ -45,12 +45,29 @@ class Round {
   void markCurrentWord(bool guessed) {
     words[currentWordIndex].isGuessed = guessed;
     if (guessed) score++;
+    
+    // Verificar si se han acertado todas las palabras
+    if (_allWordsGuessed()) {
+      print('🎉 ¡Todas las palabras acertadas! Finalizando ronda automáticamente.');
+      isFinished = true;
+      return;
+    }
+    
+    // Si no se han acertado todas, continuar con la lógica normal
     if (hasNextWord) {
       currentWordIndex++;
     } else {
       isFinished = true;
     }
   }
+
+  // Método para verificar si todas las palabras han sido acertadas
+  bool _allWordsGuessed() {
+    return words.every((word) => word.isGuessed);
+  }
+
+  // Getter para verificar si todas las palabras han sido acertadas (público)
+  bool get allWordsGuessed => _allWordsGuessed();
 
   int get remainingTime {
     if (startTime == null) return timeLimit;

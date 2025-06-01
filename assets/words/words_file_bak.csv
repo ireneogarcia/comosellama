@@ -1,0 +1,1515 @@
+Palabra,Dificultad,Categoría
+perro,fácil,animales
+gato,fácil,animales
+pájaro,fácil,animales
+pez,fácil,animales
+vaca,fácil,animales
+caballo,fácil,animales
+león,fácil,animales
+tigre,fácil,animales
+oso,fácil,animales
+mono,fácil,animales
+pollo,fácil,animales
+pato,fácil,animales
+oveja,fácil,animales
+cabra,fácil,animales
+cerdo,fácil,animales
+rana,fácil,animales
+ratón,fácil,animales
+abeja,fácil,animales
+mosca,fácil,animales
+hormiga,fácil,animales
+araña,fácil,animales
+gusano,fácil,animales
+mariposa,fácil,animales
+caracol,fácil,animales
+elefante,fácil,animales
+jirafa,fácil,animales
+serpiente,fácil,animales
+cocodrilo,fácil,animales
+tortuga,fácil,animales
+lobo,media,animales
+zorro,media,animales
+ciervo,media,animales
+conejo,fácil,animales
+ardilla,media,animales
+murciélago,media,animales
+delfín,media,animales
+ballena,media,animales
+tiburón,media,animales
+pulpo,media,animales
+cangrejo,media,animales
+camello,media,animales
+llama,media,animales
+ganso,media,animales
+pavo,fácil,animales
+águila,media,animales
+halcón,media,animales
+búho,media,animales
+loro,fácil,animales
+canario,fácil,animales
+cisne,media,animales
+flamenco,media,animales
+pingüino,media,animales
+avestruz,media,animales
+koala,media,animales
+panda,media,animales
+canguro,media,animales
+hipopótamo,media,animales
+rinoceronte,media,animales
+cebra,media,animales
+guepardo,media,animales
+leopardo,media,animales
+hiena,media,animales
+chimpancé,media,animales
+gorila,media,animales
+ornitorrinco,difícil,animales
+armadillo,media,animales
+perezoso,media,animales
+lémur,media,animales
+suricata,media,animales
+narval,difícil,animales
+beluga,difícil,animales
+manatí,difícil,animales
+ajolote,difícil,animales
+salamandra,media,animales
+tritón,media,animales
+gecko,media,animales
+iguana,media,animales
+camaleón,media,animales
+varano,difícil,animales
+kiwi,media,animales
+buitre,media,animales
+cóndor,difícil,animales
+albatros,difícil,animales
+pelícano,media,animales
+colibrí,media,animales
+medusa,media,animales
+estrella,fácil,animales
+erizo (mar),media,animales
+babosa,fácil,animales
+lombriz,fácil,animales
+mosquito,fácil,animales
+libélula,media,animales
+escarabajo,media,animales
+grillo,fácil,animales
+saltamontes,fácil,animales
+mariquita,fácil,animales
+ciempiés,media,animales
+escorpión,media,animales
+mantis,media,animales
+bisonte,difícil,animales
+búfalo,difícil,animales
+alce,difícil,animales
+reno,media,animales
+gacela,media,animales
+antílope,media,animales
+ñu,difícil,animales
+impala,difícil,animales
+cobaya,fácil,animales
+hámster,fácil,animales
+hurón,media,animales
+visón,difícil,animales
+nutria,media,animales
+castor,media,animales
+mapache,media,animales
+tejón,media,animales
+mofeta,media,animales
+codorniz,media,animales
+faisán,difícil,animales
+urogallo,difícil,animales
+mesa,fácil,objetos
+silla,fácil,objetos
+cama,fácil,objetos
+puerta,fácil,objetos
+ventana,fácil,objetos
+lámpara,fácil,objetos
+libro,fácil,objetos
+vaso,fácil,objetos
+plato,fácil,objetos
+taza,fácil,objetos
+cuchara,fácil,objetos
+tenedor,fácil,objetos
+cuchillo,fácil,objetos
+sofá,fácil,objetos
+reloj,fácil,objetos
+teléfono,fácil,objetos
+llave,fácil,objetos
+gafas,fácil,objetos
+bolso,fácil,objetos
+mochila,fácil,objetos
+paraguas,fácil,objetos
+espejo,fácil,objetos
+peine,fácil,objetos
+cepillo,fácil,objetos
+jarrón,media,objetos
+cuadro,media,objetos
+alfombra,media,objetos
+cortina,media,objetos
+cojín,fácil,objetos
+manta,fácil,objetos
+vela,fácil,objetos
+florero,media,objetos
+ordenador,media,objetos
+teclado,media,objetos
+ratón (pc),media,objetos
+impresora,media,objetos
+altavoz,media,objetos
+micrófono,media,objetos
+cámara,fácil,objetos
+batería,media,objetos
+pila,fácil,objetos
+linterna,fácil,objetos
+radio,fácil,objetos
+televisor,media,objetos
+mando,fácil,objetos
+secador,media,objetos
+plancha,media,objetos
+aspiradora,media,objetos
+nevera,media,objetos
+horno,media,objetos
+lavadora,media,objetos
+fregadero,media,objetos
+grifo,media,objetos
+inodoro,media,objetos
+ducha,media,objetos
+bañera,media,objetos
+toalla,fácil,objetos
+jabón,fácil,objetos
+papelera,fácil,objetos
+escoba,fácil,objetos
+recogedor,fácil,objetos
+cubo,fácil,objetos
+fregona,media,objetos
+cenicero,media,objetos
+mechero,fácil,objetos
+cerilla,fácil,objetos
+moneda,fácil,objetos
+billete,fácil,objetos
+tarjeta,fácil,objetos
+sobre,fácil,objetos
+sello,fácil,objetos
+lupa,fácil,objetos
+brújula,media,objetos
+mapa,fácil,objetos
+globo,fácil,objetos
+telescopio,difícil,objetos
+microscopio,difícil,objetos
+termómetro,fácil,objetos
+barómetro,difícil,objetos
+cincel,difícil,herramientas
+diapasón,difícil,objetos
+metrónomo,difícil,objetos
+sextante,extrema,objetos
+astrolabio,extrema,objetos
+catalejo,difícil,objetos
+monóculo,difícil,objetos
+matraz,difícil,objetos
+probeta,difícil,objetos
+pipeta,difícil,objetos
+embudo,fácil,objetos
+colador,fácil,objetos
+rallador,fácil,objetos
+mortero,media,objetos
+cascanueces,media,objetos
+sacacorchos,media,herramientas
+abrelatas,fácil,herramientas
+percha,fácil,objetos
+pinza,fácil,objetos
+imperdible,fácil,objetos
+alfiler,fácil,objetos
+aguja,fácil,herramientas
+dedal,media,objetos
+urna,media,objetos
+atril,difícil,objetos
+candelabro,difícil,objetos
+manzana,fácil,comida
+plátano,fácil,comida
+naranja,fácil,comida
+uva,fácil,comida
+fresa,fácil,comida
+pan,fácil,comida
+leche,fácil,comida
+queso,fácil,comida
+huevo,fácil,comida
+arroz,fácil,comida
+pasta,fácil,comida
+carne,fácil,comida
+pollo (comida),fácil,comida
+pescado,fácil,comida
+sopa,fácil,comida
+ensalada,fácil,comida
+galleta,fácil,comida
+chocolate,fácil,comida
+helado,fácil,comida
+agua,fácil,comida
+zumo,fácil,comida
+café,fácil,comida
+té,fácil,comida
+azúcar,fácil,comida
+sal,fácil,comida
+aceite,fácil,comida
+vinagre,fácil,comida
+mantequilla,fácil,comida
+yogur,fácil,comida
+mermelada,fácil,comida
+miel,fácil,comida
+cereales,fácil,comida
+tomate,fácil,comida
+cebolla,fácil,comida
+patata,fácil,comida
+zanahoria,fácil,comida
+lechuga,fácil,comida
+pepino,fácil,comida
+pimiento,fácil,comida
+ajo,fácil,comida
+limón,fácil,comida
+sandía,fácil,comida
+melón,fácil,comida
+piña,fácil,comida
+mango,media,comida
+aguacate,media,comida
+cereza,fácil,comida
+ciruela,fácil,comida
+pera,fácil,comida
+melocotón,fácil,comida
+kiwi (fruta),fácil,comida
+coco,fácil,comida
+higo,fácil,comida
+nuez,fácil,comida
+almendra,fácil,comida
+avellana,fácil,comida
+lenteja,fácil,comida
+garbanzo,fácil,comida
+judía,fácil,comida
+guisante,fácil,comida
+champiñón,fácil,comida
+seta,fácil,comida
+espárrago,media,comida
+berenjena,media,comida
+calabacín,media,comida
+calabaza,media,comida
+brócoli,fácil,comida
+coliflor,fácil,comida
+repollo,fácil,comida
+espinaca,fácil,comida
+puerro,media,comida
+apio,media,comida
+pizza,fácil,comida
+taco,media,comida
+empanada,media,comida
+croqueta,media,comida
+palomitas,fácil,comida
+magdalena,fácil,comida
+churro,fácil,comida
+dátil,fácil,comida
+pistacho,media,comida
+anacardo,media,comida
+trufa,difícil,comida
+alcachofa,media,comida
+acelga,media,comida
+rábano,fácil,comida
+nabo,fácil,comida
+remolacha,media,comida
+jengibre,media,comida
+cúrcuma,media,comida
+canela,fácil,comida
+vainilla,media,comida
+orégano,fácil,comida
+perejil,fácil,comida
+cilantro,media,comida
+albahaca,media,comida
+menta,fácil,comida
+romero,media,comida
+tomillo,media,comida
+laurel,media,comida
+azafrán,difícil,comida
+caviar,difícil,comida
+sushi,media,comida
+turrón,media,comida
+mazapán,media,comida
+polvorón,media,comida
+quinoa,difícil,comida
+chía,difícil,comida
+tofu,difícil,comida
+seitán,difícil,comida
+alegría,fácil,emociones
+tristeza,fácil,emociones
+miedo,fácil,emociones
+ira,media,emociones
+sorpresa,fácil,emociones
+asco,fácil,emociones
+amor,fácil,emociones
+odio,media,emociones
+felicidad,fácil,emociones
+calma,fácil,emociones
+susto,fácil,emociones
+cariño,fácil,emociones
+culpa,media,emociones
+vergüenza,media,emociones
+orgullo,media,emociones
+celos,media,emociones
+envidia,media,emociones
+esperanza,media,emociones
+ansiedad,media,emociones
+estrés,media,emociones
+aburrimiento,fácil,emociones
+interés,media,emociones
+curiosidad,media,emociones
+confianza,media,emociones
+desconfianza,media,emociones
+gratitud,media,emociones
+admiración,media,emociones
+nostalgia,difícil,emociones
+soledad,media,emociones
+angustia,difícil,emociones
+pánico,media,emociones
+terror,media,emociones
+furia,difícil,emociones
+rabia,media,emociones
+satisfacción,media,emociones
+placer,media,emociones
+asombro,media,emociones
+desilusión,media,emociones
+decepción,media,emociones
+frustración,media,emociones
+impaciencia,media,emociones
+paciencia,media,emociones
+serenidad,difícil,emociones
+alivio,media,emociones
+consuelo,media,emociones
+ternura,media,emociones
+afecto,media,emociones
+simpatía,media,emociones
+deseo,media,emociones
+pasión,difícil,emociones
+entusiasmo,media,emociones
+motivación,media,emociones
+determinación,difícil,emociones
+valentía,media,emociones
+coraje,media,emociones
+temor,media,emociones
+nerviosismo,media,emociones
+inquietud,media,emociones
+euforia,difícil,emociones
+éxtasis,difícil,emociones
+melancolía,difícil,emociones
+apatía,difícil,emociones
+rencor,difícil,emociones
+resentimiento,difícil,emociones
+deleite,difícil,emociones
+fascinación,difícil,emociones
+empatía,difícil,emociones
+compasión,difícil,emociones
+remordimiento,difícil,emociones
+arrepentimiento,difícil,emociones
+júbilo,difícil,emociones
+gozo,difícil,emociones
+regocijo,difícil,emociones
+anhelo,difícil,emociones
+sosiego,difícil,emociones
+desasosiego,difícil,emociones
+pesadumbre,difícil,emociones
+zozobra,extrema,emociones
+desdén,extrema,emociones
+aversión,difícil,emociones
+repugnancia,media,emociones
+médico,fácil,profesiones
+profesor,fácil,profesiones
+bombero,fácil,profesiones
+policía,fácil,profesiones
+cocinero,fácil,profesiones
+panadero,fácil,profesiones
+carpintero,media,profesiones
+pintor,media,profesiones
+escritor,media,profesiones
+músico,media,profesiones
+actor,media,profesiones
+cantante,media,profesiones
+vendedor,fácil,profesiones
+conductor,fácil,profesiones
+cartero,fácil,profesiones
+abogado,media,profesiones
+juez,media,profesiones
+ingeniero,difícil,profesiones
+arquitecto,difícil,profesiones
+científico,difícil,profesiones
+periodista,media,profesiones
+fotógrafo,media,profesiones
+diseñador,media,profesiones
+programador,difícil,profesiones
+veterinario,media,profesiones
+dentista,media,profesiones
+farmacéutico,media,profesiones
+enfermero,media,profesiones
+psicólogo,difícil,profesiones
+traductor,difícil,profesiones
+bibliotecario,media,profesiones
+agricultor,media,profesiones
+pescador,media,profesiones
+marinero,media,profesiones
+piloto,media,profesiones
+astronauta,difícil,profesiones
+mecánico,media,profesiones
+electricista,media,profesiones
+fontanero,media,profesiones
+albañil,media,profesiones
+jardinero,media,profesiones
+peluquero,fácil,profesiones
+maquillador,media,profesiones
+estilista,media,profesiones
+zapatero,media,profesiones
+biólogo,difícil,profesiones
+químico,difícil,profesiones
+físico,difícil,profesiones
+matemático,difícil,profesiones
+historiador,difícil,profesiones
+economista,difícil,profesiones
+contable,difícil,profesiones
+banquero,difícil,profesiones
+inversor,difícil,profesiones
+empresario,difícil,profesiones
+gerente,difícil,profesiones
+director,difícil,profesiones
+secretario,media,profesiones
+recepcionista,media,profesiones
+comerciante,media,profesiones
+repartidor,fácil,profesiones
+taxista,fácil,profesiones
+azafata,media,profesiones
+guía,media,profesiones
+bailarín,media,profesiones
+deportista,media,profesiones
+entrenador,media,profesiones
+árbitro,media,profesiones
+político,difícil,profesiones
+militar,media,profesiones
+detective,media,profesiones
+guardia,media,profesiones
+conserje,media,profesiones
+portero,media,profesiones
+barrendero,media,profesiones
+basurero,media,profesiones
+animador,media,profesiones
+mago,fácil,profesiones
+payaso,fácil,profesiones
+sastre,difícil,profesiones
+modista,difícil,profesiones
+joyero,difícil,profesiones
+relojero,difícil,profesiones
+escultor,difícil,profesiones
+ceramista,difícil,profesiones
+herrero,difícil,profesiones
+soldador,difícil,profesiones
+geólogo,extrema,profesiones
+astrónomo,extrema,profesiones
+meteorólogo,extrema,profesiones
+oceanógrafo,extrema,profesiones
+arqueólogo,extrema,profesiones
+paleontólogo,extrema,profesiones
+antropólogo,extrema,profesiones
+sociólogo,extrema,profesiones
+filósofo,extrema,profesiones
+lingüista,extrema,profesiones
+auditor,extrema,profesiones
+diplomático,extrema,profesiones
+coreógrafo,extrema,profesiones
+espía,media,profesiones
+funambulista,extrema,profesiones
+trapecista,difícil,profesiones
+malabarista,difícil,profesiones
+casa,fácil,lugares
+parque,fácil,lugares
+escuela,fácil,lugares
+playa,fácil,lugares
+montaña,fácil,lugares
+ciudad,fácil,lugares
+pueblo,fácil,lugares
+río,fácil,lugares
+lago,fácil,lugares
+mar,fácil,lugares
+océano,media,lugares
+bosque,fácil,lugares
+hospital,fácil,lugares
+tienda,fácil,lugares
+mercado,fácil,lugares
+restaurante,fácil,lugares
+cine,fácil,lugares
+teatro,media,lugares
+museo,media,lugares
+biblioteca,media,lugares
+iglesia,fácil,lugares
+jardín,fácil,lugares
+cocina,fácil,lugares
+baño,fácil,lugares
+dormitorio,fácil,lugares
+salón,fácil,lugares
+patio,fácil,lugares
+campo,fácil,lugares
+puente,fácil,lugares
+carretera,fácil,lugares
+calle,fácil,lugares
+plaza,fácil,lugares
+selva,media,lugares
+desierto,media,lugares
+castillo,media,lugares
+palacio,media,lugares
+aeropuerto,media,lugares
+estación,fácil,lugares
+puerto,media,lugares
+gimnasio,media,lugares
+piscina,fácil,lugares
+estadio,media,lugares
+oficina,media,lugares
+fábrica,media,lugares
+granja,fácil,lugares
+cueva,media,lugares
+volcán,media,lugares
+isla,media,lugares
+continente,media,lugares
+planeta,media,lugares
+laboratorio,difícil,lugares
+taller,media,lugares
+garaje,fácil,lugares
+sótano,media,lugares
+ático,media,lugares
+balcón,fácil,lugares
+terraza,fácil,lugares
+pasillo,fácil,lugares
+escalera,fácil,lugares
+ascensor,fácil,lugares
+comedor,fácil,lugares
+despacho,media,lugares
+aula,fácil,lugares
+pradera,media,lugares
+colina,media,lugares
+valle,media,lugares
+duna,media,lugares
+bodega,media,lugares
+molino,media,lugares
+faro,media,lugares
+túnel,media,lugares
+autopista,media,lugares
+avenida,media,lugares
+rotonda,fácil,lugares
+esquina,fácil,lugares
+frontera,media,lugares
+ayuntamiento,media,lugares
+juzgado,difícil,lugares
+cárcel,media,lugares
+prisión,media,lugares
+cementerio,media,lugares
+catedral,media,lugares
+templo,media,lugares
+pirámide,media,lugares
+ruinas,media,lugares
+fortaleza,media,lugares
+muralla,media,lugares
+península,difícil,lugares
+galaxia,difícil,lugares
+universo,difícil,lugares
+cañón,media,lugares
+acantilado,media,lugares
+glaciar,difícil,lugares
+oasis,difícil,lugares
+pantano,difícil,lugares
+ciénaga,difícil,lugares
+marisma,difícil,lugares
+arrecife,difícil,lugares
+cráter,difícil,lugares
+observatorio,extrema,lugares
+planetario,extrema,lugares
+viñedo,difícil,lugares
+aduana,difícil,lugares
+embajada,difícil,lugares
+consulado,difícil,lugares
+monasterio,difícil,lugares
+convento,difícil,lugares
+ermita,difícil,lugares
+basílica,difícil,lugares
+sinagoga,difícil,lugares
+mezquita,difícil,lugares
+acueducto,difícil,lugares
+anfiteatro,difícil,lugares
+coliseo,difícil,lugares
+idea,media,conceptos abstractos
+sueño,fácil,conceptos abstractos
+tiempo,fácil,conceptos abstractos
+color,fácil,conceptos abstractos
+número,fácil,conceptos abstractos
+forma,fácil,conceptos abstractos
+sonido,fácil,conceptos abstractos
+juego,fácil,conceptos abstractos
+magia,fácil,conceptos abstractos
+secreto,media,conceptos abstractos
+regalo,fácil,conceptos abstractos
+verdad,media,conceptos abstractos
+mentira,media,conceptos abstractos
+palabra,fácil,conceptos abstractos
+nombre,fácil,conceptos abstractos
+historia,media,conceptos abstractos
+ruido,fácil,conceptos abstractos
+suerte,fácil,conceptos abstractos
+final,fácil,conceptos abstractos
+inicio,fácil,conceptos abstractos
+libertad,media,conceptos abstractos
+justicia,media,conceptos abstractos
+belleza,media,conceptos abstractos
+amistad,media,conceptos abstractos
+futuro,media,conceptos abstractos
+pasado,media,conceptos abstractos
+problema,media,conceptos abstractos
+solución,media,conceptos abstractos
+cambio,media,conceptos abstractos
+opinión,media,conceptos abstractos
+razón,media,conceptos abstractos
+realidad,media,conceptos abstractos
+cultura,difícil,conceptos abstractos
+ciencia,media,conceptos abstractos
+política,difícil,conceptos abstractos
+economía,difícil,conceptos abstractos
+religión,media,conceptos abstractos
+memoria,media,conceptos abstractos
+inteligencia,media,conceptos abstractos
+creatividad,media,conceptos abstractos
+democracia,difícil,conceptos abstractos
+filosofía,extrema,conceptos abstractos
+ironía,difícil,conceptos abstractos
+metáfora,difícil,conceptos abstractos
+utopía,extrema,conceptos abstractos
+dilema,difícil,conceptos abstractos
+prejuicio,difícil,conceptos abstractos
+conciencia,difícil,conceptos abstractos
+destino,media,conceptos abstractos
+casualidad,media,conceptos abstractos
+ética,extrema,conceptos abstractos
+moral,difícil,conceptos abstractos
+lógica,difícil,conceptos abstractos
+paradoja,extrema,conceptos abstractos
+intuición,difícil,conceptos abstractos
+inspiración,media,conceptos abstractos
+sabiduría,difícil,conceptos abstractos
+ignorancia,media,conceptos abstractos
+abstracción,extrema,conceptos abstractos
+existencia,difícil,conceptos abstractos
+martillo,fácil,herramientas
+clavo,fácil,herramientas
+tijeras,fácil,herramientas
+pala,fácil,herramientas
+escoba (herramienta),fácil,herramientas
+aguja (coser),fácil,herramientas
+regla,fácil,herramientas
+cepillo (limpieza),fácil,herramientas
+pinzas (genérico),fácil,herramientas
+llave (herramienta),fácil,herramientas
+cubo (recipiente),fácil,objetos
+hilo,fácil,objetos
+cuerda,fácil,objetos
+destornillador,fácil,herramientas
+tornillo,fácil,herramientas
+sierra,media,herramientas
+hacha,media,herramientas
+rastrillo,fácil,herramientas
+pegamento,fácil,objetos
+alicates,media,herramientas
+taladro,media,herramientas
+metro,fácil,herramientas
+nivel (herramienta),media,herramientas
+lima (herramienta),media,herramientas
+serrucho,media,herramientas
+escalera (herramienta),fácil,objetos
+carretilla,media,herramientas
+soldador (eléctrico),difícil,herramientas
+espátula,media,herramientas
+brocha,fácil,herramientas
+rodillo (pintura),media,herramientas
+gato (hidráulico),difícil,herramientas
+polea,difícil,herramientas
+compás (herramienta),media,herramientas
+cúter,fácil,herramientas
+abrelatas (herramienta),fácil,herramientas
+cincel (herramienta),difícil,herramientas
+escuadra,media,herramientas
+soplete,difícil,herramientas
+yunque,extrema,herramientas
+camisa,fácil,ropa
+pantalón,fácil,ropa
+zapato,fácil,ropa
+falda,fácil,ropa
+vestido,fácil,ropa
+abrigo,fácil,ropa
+sombrero,fácil,ropa
+calcetín,fácil,ropa
+guante,fácil,ropa
+bufanda,fácil,ropa
+gorro,fácil,ropa
+pijama,fácil,ropa
+bañador,fácil,ropa
+cinturón,fácil,ropa
+chaqueta,fácil,ropa
+blusa,fácil,ropa
+jersey,fácil,ropa
+bota,fácil,ropa
+sandalia,fácil,ropa
+corbata,fácil,ropa
+traje,media,ropa
+americana,media,ropa
+gabardina,media,ropa
+chaleco,fácil,ropa
+sudadera,fácil,ropa
+leggins,fácil,ropa
+chándal,fácil,ropa
+uniforme,media,ropa
+delantal,fácil,ropa
+bata,fácil,ropa
+medias,fácil,ropa
+leotardos,fácil,ropa
+zapatillas,fácil,ropa
+chanclas,fácil,ropa
+pañuelo,fácil,ropa
+tirantes,media,ropa
+impermeable,media,ropa
+kimono,media,ropa
+túnica,media,ropa
+turbante,media,ropa
+frac,difícil,ropa
+esmoquin,difícil,ropa
+corsé,difícil,ropa
+sari,difícil,ropa
+chilaba,difícil,ropa
+poncho,media,ropa
+pamela,difícil,ropa
+bombín,difícil,ropa
+albornoz,media,ropa
+gemelos (ropa),difícil,ropa
+fiesta,fácil,eventos
+cumpleaños,fácil,eventos
+boda,media,eventos
+navidad,fácil,eventos
+viaje,fácil,eventos
+concierto,media,eventos
+partido,fácil,eventos
+vacaciones,fácil,eventos
+reunión,media,eventos
+examen,media,eventos
+clase,fácil,eventos
+cena,fácil,eventos
+almuerzo,fácil,eventos
+desayuno,fácil,eventos
+baile,fácil,eventos
+juego (evento),fácil,eventos
+paseo,fácil,eventos
+visita,fácil,eventos
+feria,media,eventos
+mercado (evento),fácil,eventos
+festival,media,eventos
+carnaval,media,eventos
+graduación,media,eventos
+conferencia,difícil,eventos
+exposición,media,eventos
+ceremonia,media,eventos
+debate,difícil,eventos
+entrevista,media,eventos
+competición,media,eventos
+torneo,media,eventos
+campeonato,media,eventos
+manifestación,difícil,eventos
+huelga,difícil,eventos
+elecciones,difícil,eventos
+subasta,difícil,eventos
+inauguración,difícil,eventos
+clausura,difícil,eventos
+aniversario,media,eventos
+funeral,difícil,eventos
+bautizo,media,eventos
+simposio,extrema,eventos
+coloquio,extrema,eventos
+seminario,extrema,eventos
+congreso,extrema,eventos
+gala,difícil,eventos
+banquete,difícil,eventos
+recepción,difícil,eventos
+peregrinación,extrema,eventos
+procesión,media,eventos
+romería,media,eventos
+investidura,extrema,eventos
+coronación,extrema,eventos
+referéndum,extrema,eventos
+eclipse,difícil,eventos
+solsticio,extrema,eventos
+equinoccio,extrema,eventos
+bienal,extrema,eventos
+árbol,fácil,naturaleza
+flor,fácil,naturaleza
+río (naturaleza),fácil,naturaleza
+mar (naturaleza),fácil,naturaleza
+montaña (naturaleza),fácil,naturaleza
+cielo,fácil,naturaleza
+sol,fácil,naturaleza
+luna,fácil,naturaleza
+estrella (cielo),fácil,naturaleza
+nube,fácil,naturaleza
+lluvia,fácil,naturaleza
+nieve,fácil,naturaleza
+viento,fácil,naturaleza
+piedra,fácil,naturaleza
+arena,fácil,naturaleza
+hierba,fácil,naturaleza
+hoja,fácil,naturaleza
+tierra,fácil,naturaleza
+fuego,fácil,naturaleza
+ola,fácil,naturaleza
+bosque (naturaleza),fácil,naturaleza
+selva (naturaleza),media,naturaleza
+desierto (naturaleza),media,naturaleza
+lago (naturaleza),fácil,naturaleza
+océano (naturaleza),media,naturaleza
+volcán (naturaleza),media,naturaleza
+isla (naturaleza),media,naturaleza
+cueva (naturaleza),media,naturaleza
+amanecer,fácil,naturaleza
+atardecer,fácil,naturaleza
+arcoíris,fácil,naturaleza
+tormenta,media,naturaleza
+rayo,media,naturaleza
+trueno,media,naturaleza
+granizo,media,naturaleza
+niebla,media,naturaleza
+rocío,media,naturaleza
+escarcha,media,naturaleza
+marea,media,naturaleza
+raíz,fácil,naturaleza
+glaciar (naturaleza),difícil,naturaleza
+cañón (naturaleza),media,naturaleza
+acantilado (naturaleza),media,naturaleza
+duna (naturaleza),media,naturaleza
+oasis (naturaleza),difícil,naturaleza
+pantano (naturaleza),difícil,naturaleza
+marisma (naturaleza),difícil,naturaleza
+arrecife (naturaleza),difícil,naturaleza
+aurora,difícil,naturaleza
+géiser,extrema,naturaleza
+estalactita,difícil,naturaleza
+estalagmita,difícil,naturaleza
+fósil,difícil,naturaleza
+mineral,media,naturaleza
+ecosistema,difícil,naturaleza
+lava,media,naturaleza
+delta,difícil,naturaleza
+dibujo,fácil,arte
+pintura,fácil,arte
+canción,fácil,arte
+música,fácil,arte
+baile (arte),fácil,arte
+foto,fácil,arte
+poema,media,arte
+cuento,fácil,arte
+teatro (arte),media,arte
+cine (arte),fácil,arte
+estatua,media,arte
+color (arte),fácil,arte
+lienzo,media,arte
+pincel,fácil,arte
+nota (musical),fácil,arte
+verso,media,arte
+escena,media,arte
+actor (arte),media,arte
+artista,media,arte
+obra,media,arte
+escultura,difícil,arte
+novela,media,arte
+ópera,difícil,arte
+ballet,difícil,arte
+sinfonía,extrema,arte
+retrato,media,arte
+paisaje (arte),media,arte
+mural,media,arte
+cerámica,difícil,arte
+fotografía,media,arte
+arquitectura,difícil,arte
+melodía,media,arte
+ritmo,media,arte
+armonía,media,arte
+coreografía,difícil,arte
+estilo,media,arte
+galería,media,arte
+museo (arte),media,arte
+exposición (arte),media,arte
+marco (arte),media,arte
+acuarela,difícil,arte
+óleo,difícil,arte
+grabado,difícil,arte
+mosaico,difícil,arte
+vitral,extrema,arte
+tapiz,extrema,arte
+caligrafía,extrema,arte
+performance,extrema,arte
+instalación,extrema,arte
+soneto,extrema,arte
+epopeya,extrema,arte
+partitura,extrema,arte
+batuta,difícil,arte
+claroscuro,extrema,arte
+perspectiva,difícil,arte
+boceto,media,arte
+maqueta,difícil,arte
+relieve,difícil,arte
+burro,fácil,animales
+gallina,fácil,animales
+gallo,fácil,animales
+avispa,fácil,animales
+topo,media,animales
+erizo,media,animales
+sapo,fácil,animales
+cuervo,media,animales
+paloma,fácil,animales
+ternero,fácil,animales
+potro,fácil,animales
+cordero,fácil,animales
+oruga,fácil,animales
+renacuajo,fácil,animales
+pollito,fácil,animales
+cabrito,fácil,animales
+lechón,fácil,animales
+gatito,fácil,animales
+perrito,fácil,animales
+ratoncito,fácil,animales
+coyote,media,animales
+lince,media,animales
+puma,media,animales
+jaguar,media,animales
+ñandú,difícil,animales
+gaviota,media,animales
+morsa,difícil,animales
+mejillón,media,comida
+ostra,media,comida
+camarón,media,comida
+coral,media,naturaleza
+boa,media,animales
+pitón,media,animales
+barracuda,difícil,animales
+morena (pez),difícil,animales
+rape (pez),difícil,comida
+mandril,difícil,animales
+puercoespín,difícil,animales
+caribú,difícil,animales
+cobra,media,animales
+caimán,media,animales
+grulla,media,animales
+dado,fácil,objetos
+goma,fácil,objetos
+globo (juguete),fácil,objetos
+clip,fácil,objetos
+chincheta,fácil,objetos
+balde,fácil,objetos
+frasco,fácil,objetos
+tarro,fácil,objetos
+bote (recipiente),fácil,objetos
+lata,fácil,objetos
+tiza,fácil,objetos
+borrador,fácil,objetos
+anillo,fácil,objetos
+collar,fácil,objetos
+canica,fácil,objetos
+peonza,fácil,objetos
+cometa (juguete),fácil,objetos
+diadema,fácil,objetos
+estante,fácil,objetos
+álbum,fácil,objetos
+llavero,fácil,objetos
+candado,fácil,objetos
+auricular,fácil,objetos
+urna (votar),media,objetos
+pergamino,difícil,objetos
+podio,media,objetos
+bisturí,difícil,herramientas
+balanza,media,objetos
+maceta,fácil,objetos
+regadera,fácil,objetos
+hamaca,fácil,objetos
+sombrilla,fácil,objetos
+tumbona,fácil,objetos
+flotador,fácil,objetos
+kayak,media,objetos
+remo,fácil,herramientas
+ancla,media,objetos
+timón,media,objetos
+mechero bunsen,difícil,herramientas
+placa petri,difícil,objetos
+portapapeles,fácil,objetos
+taburete,fácil,objetos
+maniquí,media,objetos
+pedestal,difícil,objetos
+vitrina,media,objetos
+pomelo,fácil,comida
+granada (fruta),fácil,comida
+papaya,fácil,comida
+mandarina,fácil,comida
+lima (fruta),fácil,comida
+col,fácil,comida
+vino,fácil,comida
+cerveza,fácil,comida
+sidra,fácil,comida
+chicle,fácil,comida
+caramelo,fácil,comida
+bombón,fácil,comida
+flan,fácil,comida
+natillas,fácil,comida
+compota,fácil,comida
+membrillo,media,comida
+grosella,media,comida
+frambuesa,fácil,comida
+mora,fácil,comida
+arándano,media,comida
+caqui,media,comida
+chirimoya,media,comida
+níspero,media,comida
+endibia,difícil,comida
+cardo,difícil,comida
+rúcula,media,comida
+hinojo,media,comida
+wasabi,media,comida
+kombucha,difícil,comida
+miso,difícil,comida
+anguila,difícil,comida
+percebe,difícil,comida
+centolla,difícil,comida
+buey de mar,difícil,comida
+nécora,difícil,comida
+vieira,difícil,comida
+zamburiña,difícil,comida
+kefir,difícil,comida
+spirulina,extrema,comida
+mijo,difícil,comida
+espelta,difícil,comida
+risa,fácil,emociones
+llanto,fácil,emociones
+pena,fácil,emociones
+cansancio,fácil,emociones
+valor,media,emociones
+dolor,fácil,emociones
+hastío,media,emociones
+recelo,media,emociones
+sospecha,media,emociones
+tedio,difícil,emociones
+aflicción,difícil,emociones
+alborozo,difícil,emociones
+desamparo,media,emociones
+desconsuelo,media,emociones
+embeleso,difícil,emociones
+turbación,media,emociones
+apremio,difícil,emociones
+congoja,difícil,emociones
+desazón,difícil,emociones
+exasperación,difícil,emociones
+veneración,extrema,emociones
+acritud,extrema,emociones
+arrojo,difícil,emociones
+bizarría,extrema,emociones
+denuedo,extrema,emociones
+efusividad,difícil,emociones
+frenesí,difícil,emociones
+hosquedad,extrema,emociones
+imperturbabilidad,extrema,emociones
+inquina,extrema,emociones
+intrepidez,extrema,emociones
+iracundia,extrema,emociones
+malhumor,media,emociones
+murria,extrema,emociones
+beatitud,extrema,emociones
+contrición,extrema,emociones
+dejadez,difícil,emociones
+efervescencia,extrema,emociones
+flema,difícil,emociones
+impasibilidad,extrema,emociones
+indolencia,extrema,emociones
+querencia,extrema,emociones
+reticencia,extrema,emociones
+templanza,extrema,emociones
+volubilidad,extrema,emociones
+atimia,extrema,emociones
+granjero,fácil,profesiones
+camarero,fácil,profesiones
+portero (edificio),fácil,profesiones
+vigilante,media,profesiones
+secretario (genérico),media,profesiones
+recepcionista (hotel),media,profesiones
+deportista (genérico),media,profesiones
+bailarín (clásico),media,profesiones
+guía (turístico),media,profesiones
+juez (competición),media,profesiones
+cura,media,profesiones
+monja,media,profesiones
+artesano,media,profesiones
+locutor,media,profesiones
+presentador,media,profesiones
+reportero,media,profesiones
+editor,difícil,profesiones
+técnico,media,profesiones
+analista,difícil,profesiones
+consejero,difícil,profesiones
+consultor,difícil,profesiones
+terapeuta,difícil,profesiones
+masajista,media,profesiones
+entrenador (personal),media,profesiones
+árbitro (fútbol),media,profesiones
+notario,extrema,profesiones
+registrador,extrema,profesiones
+político (local),difícil,profesiones
+diplomático (consular),extrema,profesiones
+investigador,difícil,profesiones
+catedrático,extrema,profesiones
+conservador (museo),extrema,profesiones
+restaurador (arte),extrema,profesiones
+archivero,extrema,profesiones
+documentalista,extrema,profesiones
+filólogo,extrema,profesiones
+paisajista,extrema,profesiones
+escenógrafo,extrema,profesiones
+ilustrador,difícil,profesiones
+caricaturista,difícil,profesiones
+humorista,media,profesiones
+guionista,difícil,profesiones
+dramaturgo,extrema,profesiones
+intérprete (conferencias),extrema,profesiones
+forense,extrema,profesiones
+criminólogo,extrema,profesiones
+enólogo,extrema,profesiones
+sumiller,extrema,profesiones
+barista,difícil,profesiones
+epidemiólogo,extrema,profesiones
+logopeda,extrema,profesiones
+optometrista,extrema,profesiones
+podólogo,extrema,profesiones
+cuarto,fácil,lugares
+colegio,fácil,lugares
+supermercado,fácil,lugares
+camino,fácil,lugares
+hotel,fácil,lugares
+banco (institución),fácil,lugares
+edificio,fácil,lugares
+piso (vivienda),fácil,lugares
+cafetería,fácil,lugares
+panadería,fácil,lugares
+carnicería,fácil,lugares
+pescadería,fácil,lugares
+país (españa),fácil,lugares
+capital (madrid),fácil,lugares
+provincia (región),media,lugares
+región (geográfica),media,lugares
+barrio (ciudad),fácil,lugares
+aldea (pequeña),media,lugares
+acera (peatonal),fácil,lugares
+trastero,media,lugares
+galería (comercial),media,lugares
+auditorio,difícil,lugares
+conservatorio,extrema,lugares
+parlamento,difícil,lugares
+senado,difícil,lugares
+ministerio,difícil,lugares
+catacumba,extrema,lugares
+necrópolis,extrema,lugares
+hemiciclo,extrema,lugares
+acrópolis,extrema,lugares
+circo (romano),difícil,lugares
+hipódromo,difícil,lugares
+hangar,difícil,lugares
+astillero,extrema,lugares
+cantera,difícil,lugares
+refinería,extrema,lugares
+apeadero,difícil,lugares
+principio,media,conceptos abstractos
+causa,media,conceptos abstractos
+efecto,media,conceptos abstractos
+orden,media,conceptos abstractos
+caos,media,conceptos abstractos
+silencio,media,conceptos abstractos
+espacio,media,conceptos abstractos
+promesa,media,conceptos abstractos
+norma,media,conceptos abstractos
+ley,media,conceptos abstractos
+error,fácil,conceptos abstractos
+acierto,fácil,conceptos abstractos
+riesgo,media,conceptos abstractos
+ayuda,fácil,conceptos abstractos
+favor,fácil,conceptos abstractos
+deber,media,conceptos abstractos
+derecho,media,conceptos abstractos
+trabajo,fácil,conceptos abstractos
+descanso,fácil,conceptos abstractos
+vacío,media,conceptos abstractos
+identidad,difícil,conceptos abstractos
+sociedad,difícil,conceptos abstractos
+naturaleza (concepto),media,conceptos abstractos
+universo (concepto),difícil,conceptos abstractos
+energía,media,conceptos abstractos
+materia,media,conceptos abstractos
+movimiento,media,conceptos abstractos
+velocidad,media,conceptos abstractos
+fuerza,media,conceptos abstractos
+poder,media,conceptos abstractos
+influencia,difícil,conceptos abstractos
+control,media,conceptos abstractos
+conflicto,media,conceptos abstractos
+guerra,media,conceptos abstractos
+fe,media,conceptos abstractos
+creencia,media,conceptos abstractos
+dios (concepto),media,conceptos abstractos
+alma,difícil,conceptos abstractos
+espíritu,difícil,conceptos abstractos
+mente,media,conceptos abstractos
+símbolo,difícil,conceptos abstractos
+alegoría,extrema,conceptos abstractos
+mito,difícil,conceptos abstractos
+leyenda,media,conceptos abstractos
+dogma,extrema,conceptos abstractos
+axioma,extrema,conceptos abstractos
+teorema,extrema,conceptos abstractos
+hipótesis,extrema,conceptos abstractos
+teoría,difícil,conceptos abstractos
+método,difícil,conceptos abstractos
+sistema,difícil,conceptos abstractos
+estructura,difícil,conceptos abstractos
+función,difícil,conceptos abstractos
+propósito,difícil,conceptos abstractos
+objetivo,media,conceptos abstractos
+meta,media,conceptos abstractos
+valor (moral),difícil,conceptos abstractos
+virtud,difícil,conceptos abstractos
+vicio,media,conceptos abstractos
+pecado,media,conceptos abstractos
+cinta,fácil,objetos
+lija,fácil,herramientas
+exprimidor (manual),fácil,herramientas
+venda (sanitaria),fácil,objetos
+gancho (simple),fácil,objetos
+imán (pequeño),fácil,objetos
+silbato (deporte),fácil,objetos
+agenda (papel),fácil,objetos
+calendario (pared),fácil,objetos
+grapadora (oficina),fácil,herramientas
+perforadora (papel),fácil,herramientas
+destapador,fácil,herramientas
+pelador,fácil,herramientas
+batidor (manual),fácil,herramientas
+rodillo (cocina),fácil,herramientas
+navaja (multiusos),media,herramientas
+tenaza (corte),media,herramientas
+maza (goma),media,herramientas
+palanca (hierro),media,herramientas
+soldador (estaño),difícil,herramientas
+multímetro (básico),extrema,herramientas
+sargento (carpintería),difícil,herramientas
+cepillo (madera),difícil,herramientas
+escoplo (madera),difícil,herramientas
+hoz (pequeña),media,herramientas
+guadaña (jardín),difícil,herramientas
+podadora (manual),media,herramientas
+motosierra (pequeña),difícil,herramientas
+martinete,extrema,herramientas
+almádena,extrema,herramientas
+azuela,extrema,herramientas
+amoladora (angular),extrema,herramientas
+pulidora (coche),extrema,herramientas
+grapadora (industrial),extrema,herramientas
+pistola de clavos (neumática),extrema,herramientas
+llave de impacto (neumática),extrema,herramientas
+dinamométrica (llave),extrema,herramientas
+extractor (mecánico),extrema,herramientas
+compresor (aire),extrema,herramientas
+generador (eléctrico),extrema,herramientas
+dremel (multiherramienta),extrema,herramientas
+soplete (oxicorte),extrema,herramientas
+cabrestante (manual),extrema,herramientas
+tecle (manual),extrema,herramientas
+pistolete (pintura),extrema,herramientas
+fuelle (chimenea),difícil,herramientas
+badila (carbón),extrema,herramientas
+atizador (fuego),extrema,herramientas
+tridente,difícil,herramientas
+arpón,difícil,herramientas
+pie de rey,extrema,herramientas
+gorra,fácil,ropa
+pulsera,fácil,ropa
+calzoncillos,fácil,ropa
+bragas,fácil,ropa
+sujetador,fácil,ropa
+camiseta,fácil,ropa
+vaqueros,fácil,ropa
+bikini,fácil,ropa
+camisón,fácil,ropa
+calceta,fácil,ropa
+babero,fácil,ropa
+pañal,fácil,ropa
+body,fácil,ropa
+patucos,fácil,ropa
+manoplas,fácil,ropa
+leotardo,fácil,ropa
+horquilla,fácil,ropa
+coletero,fácil,ropa
+polo (prenda),fácil,ropa
+cazadora,fácil,ropa
+parka,media,ropa
+trenca,media,ropa
+blazer,media,ropa
+cárdigan,media,ropa
+pajarita,media,ropa
+sombrero de copa,difícil,ropa
+velo (novia),media,ropa
+mantilla (española),difícil,ropa
+peineta (adorno),media,ropa
+abanico (mano),fácil,ropa
+náuticos (zapatos),media,ropa
+alpargatas (calzado),fácil,ropa
+zuecos (madera),media,ropa
+kepis,extrema,ropa
+boina,media,ropa
+chistera,difícil,ropa
+faja,media,ropa
+liguero,difícil,ropa
+bolero (prenda corta),difícil,ropa
+capelina,extrema,ropa
+estola (piel),extrema,ropa
+fular (seda),media,ropa
+pareo (playa),media,ropa
+kaftán (túnica),extrema,ropa
+chaqué (ceremonia),extrema,ropa
+mitones (guantes),difícil,ropa
+sotana,extrema,ropa
+casulla,extrema,ropa
+alba,extrema,ropa
+hábito,media,ropa
+toga,difícil,ropa
+comunión,media,eventos
+mitin,difícil,eventos
+desfile,media,eventos
+verbena,media,eventos
+merienda,fácil,eventos
+picnic,fácil,eventos
+kermés,difícil,eventos
+charla,fácil,eventos
+taller (curso),media,eventos
+masterclass,difícil,eventos
+presentación,media,eventos
+rueda de prensa,difícil,eventos
+cóctel,media,eventos
+brindis,media,eventos
+homenaje,media,eventos
+ofrenda,media,eventos
+vigilia,difícil,eventos
+ponencia,extrema,eventos
+vernissage,extrema,eventos
+convite,difícil,eventos
+certamen,difícil,eventos
+sínodo,extrema,eventos
+concilio,extrema,eventos
+capitulacion (rendicion),extrema,eventos
+jubileo (celebracion),extrema,eventos
+rogativa,extrema,eventos
+novenario,extrema,eventos
+simulacro,media,eventos
+performance (artistica),extrema,eventos
+happening,extrema,eventos
+flashmob,difícil,eventos
+rave,difícil,eventos
+ágape (comida),extrema,eventos
+justa (medieval),extrema,eventos
+aquelarre,extrema,eventos
+cónclave (elección papal),extrema,eventos
+efeméride (conmemoración),extrema,eventos
+consistorio (reunión),extrema,eventos
+liturgia (ritual),extrema,eventos
+semilla,fácil,naturaleza
+tallo,fácil,naturaleza
+rama,fácil,naturaleza
+corteza,fácil,naturaleza
+pétalo,fácil,naturaleza
+polen,fácil,naturaleza
+musgo,media,naturaleza
+hongo,fácil,naturaleza
+alga,fácil,naturaleza
+costa,fácil,naturaleza
+charco,fácil,naturaleza
+barro,fácil,naturaleza
+polvo,fácil,naturaleza
+humo,fácil,naturaleza
+ceniza,fácil,naturaleza
+escama,fácil,naturaleza
+pluma,fácil,naturaleza
+arroyo,fácil,naturaleza
+manantial,media,naturaleza
+remolino,media,naturaleza
+corriente,media,naturaleza
+brisa,fácil,naturaleza
+vendaval,media,naturaleza
+huracán,media,naturaleza
+tifón,difícil,naturaleza
+tornado,media,naturaleza
+terremoto,media,naturaleza
+erupción,media,naturaleza
+sequía,media,naturaleza
+inundación,media,naturaleza
+alud,difícil,naturaleza
+deshielo,media,naturaleza
+relámpago,media,naturaleza
+centella,difícil,naturaleza
+bruma,media,naturaleza
+calima,difícil,naturaleza
+fiordo,extrema,naturaleza
+estepa,extrema,naturaleza
+tundra,extrema,naturaleza
+taiga,extrema,naturaleza
+sabana,difícil,naturaleza
+chaparral,extrema,naturaleza
+manglar,extrema,naturaleza
+sima,extrema,naturaleza
+fumarola,extrema,naturaleza
+monzón,extrema,naturaleza
+barranco,media,naturaleza
+meandro,extrema,naturaleza
+albufera,extrema,naturaleza
+turbera,extrema,naturaleza
+humus,difícil,naturaleza
+rizoma,extrema,naturaleza
+liquen,extrema,naturaleza
+espora,difícil,naturaleza
+collage,media,arte
+grafiti,media,arte
+coro,fácil,arte
+orquesta,media,arte
+escenario,fácil,arte
+telón,fácil,arte
+aplauso,fácil,arte
+crítica,media,arte
+talento,media,arte
+genio,media,arte
+moda,fácil,arte
+diseño,media,arte
+joyería,media,arte
+adorno,fácil,arte
+decoración,fácil,arte
+artesanía,media,arte
+temple,extrema,arte
+pastel (pintura),difícil,arte
+carboncillo,difícil,arte
+sanguina,extrema,arte
+sepia,extrema,arte
+serigrafía,extrema,arte
+xilografía,extrema,arte
+litografía,extrema,arte
+aguafuerte,extrema,arte
+gouache,extrema,arte
+díptico,extrema,arte
+tríptico,extrema,arte
+políptico,extrema,arte
+retablo,extrema,arte
+capitel,extrema,arte
+arquitrabe,extrema,arte
+friso,extrema,arte
+ménsula,extrema,arte
+gárgola,extrema,arte
+contrapunto,extrema,arte
+fuga,extrema,arte
+leitmotiv,extrema,arte
+libreto,extrema,arte
+dramaturgia,extrema,arte

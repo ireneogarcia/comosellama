@@ -120,6 +120,11 @@ class RoundBloc extends ChangeNotifier {
     _gameController.handleAnswer(isCorrect);
 
     if (_state.round!.isFinished) {
+      if (_state.round!.allWordsGuessed) {
+        print('🎉 ¡RONDA COMPLETADA! Todas las palabras acertadas antes de tiempo.');
+        print('Puntuación final: ${_state.round!.score}/${_state.round!.words.length}');
+        print('Tiempo restante: ${_state.round!.remainingTime} segundos');
+      }
       _finishRound();
     }
     
@@ -140,7 +145,10 @@ class RoundBloc extends ChangeNotifier {
         FeedbackService().timeWarningFeedback();
       }
 
-      if (_gameController.isTimeUp()) {
+      if (_gameController.isTimeUp() || round.allWordsGuessed) {
+        if (round.allWordsGuessed) {
+          print('⏰ Timer detectó que todas las palabras han sido acertadas');
+        }
         _finishRound();
       } else {
         notifyListeners();
